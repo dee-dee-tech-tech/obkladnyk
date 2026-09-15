@@ -1,0 +1,655 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Обкладник — помічник для швидких обкладинок для статей, YouTube, Instagram та Stories у стилі вашої редакції.">
+<title>Обкладник</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;500;600;700;800&family=Montserrat:wght@800&family=Rubik:wght@800&family=Golos+Text:wght@800&family=Arsenal:wght@700&family=Onest:wght@800&family=Oswald:wght@600&family=Roboto+Condensed:wght@700&family=Fira+Sans+Condensed:wght@700&family=Playfair+Display:wght@700&family=Lora:wght@700&family=Merriweather:wght@900&family=Cormorant+Garamond:wght@700&family=Roboto+Slab:wght@700&family=Bitter:wght@800&family=Russo+One&family=Comfortaa:wght@700&display=swap">
+</head>
+<body>
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#0F1218; --panel:#171B23; --panel2:#1F242E; --ink:#F3F0E7; --muted:#9298A6; --line:#2B313D;
+  --accent:#FFD23F; --accent-ink:#17191F; --hi:#FFD23F; --blue:#6B93FF; --ok:#3FCB7A; --warn:#F0A93B; --bad:#FF6B5B;
+  --shadow:0 18px 50px rgba(0,0,0,.55);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:radial-gradient(900px 520px at 8% -8%,rgba(255,210,63,.13),transparent 60%),radial-gradient(800px 520px at 100% 0%,rgba(107,147,255,.12),transparent 60%),var(--bg);background-attachment:fixed;color:var(--ink);font:14px/1.5 "Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;padding-inline:16px;padding-block:0 24px}
+h1,h2,h3{margin:0;text-wrap:balance}
+button{font:inherit;color:inherit;cursor:pointer}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+textarea{resize:vertical;min-height:110px;font-size:13px;line-height:1.45}
+label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;letter-spacing:.02em}
+.field{margin-bottom:12px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row>*{flex:1 1 120px}
+.hint{font-size:12px;color:var(--muted);margin:6px 0 0}
+.hint code{font-family:inherit;background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:0 4px}
+
+/* top */
+.top{display:flex;align-items:center;gap:16px;padding-block:16px;border-bottom:2px solid var(--hi);margin-bottom:18px;flex-wrap:wrap}
+.brand{font:700 20px "Unbounded",sans-serif;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+.brand i{display:inline-block;width:26px;height:18px;background:var(--hi);border-radius:2px;transform:skewX(-8deg)}
+.top .spacer{flex:1}
+.examples{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.about{background:linear-gradient(135deg,rgba(255,210,63,.10),rgba(107,147,255,.06) 60%,transparent),var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:16px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
+.about .mark{width:60px;height:60px;border-radius:16px;background:var(--hi);display:grid;place-items:center;font:700 24px "Unbounded",sans-serif;color:#17191F;transform:rotate(-5deg);box-shadow:0 10px 24px rgba(255,210,63,.25)}
+.about p{margin:0;font-size:16px;line-height:1.55;max-width:70ch}
+.about p+p{margin-top:8px;color:var(--muted);font-size:14px}
+@media (max-width:600px){.about{grid-template-columns:1fr}}
+
+.btn{border:1px solid var(--line);background:var(--panel2);border-radius:8px;padding:8px 12px;font-weight:600;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent;box-shadow:0 6px 18px rgba(255,210,63,.22)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.sm{padding:5px 9px;font-size:12px;border-radius:6px}
+
+/* workspace */
+.ws{display:grid;grid-template-columns:340px minmax(0,1fr) 260px;gap:16px;align-items:start}
+@media (max-width:1100px){.ws{grid-template-columns:330px minmax(0,1fr)}.checks{grid-column:1/-1}}
+@media (max-width:760px){.ws{grid-template-columns:1fr}.checks{grid-column:auto}}
+
+.side{display:flex;flex-direction:column;gap:10px}
+details.step{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+details.step>summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;align-items:center;gap:10px;font-weight:700;user-select:none}
+details.step>summary::-webkit-details-marker{display:none}
+details.step>summary .n{font:700 11px "Unbounded",sans-serif;background:var(--hi);color:#17191F;border-radius:4px;padding:2px 6px}
+details.step>summary .st{margin-left:auto;font-size:12px;color:var(--muted);font-weight:500;text-align:right}
+details.step[open]>summary{border-bottom:1px solid var(--line)}
+details.step .body{padding:12px 14px 14px}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--panel2);border-radius:999px;padding:5px 11px;font-size:12px;font-weight:600}
+.chip[aria-pressed="true"]{background:var(--hi);color:#17191F;border-color:var(--hi)}
+
+.fmt{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
+.fmt button{border:1px solid var(--line);background:var(--panel2);border-radius:8px;padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;font-weight:600;line-height:1.2}
+.fmt button .box{background:var(--muted);opacity:.55;border-radius:2px}
+.fmt button[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.fmt button[aria-pressed="true"] .box{background:var(--accent);opacity:1}
+.fmt button span.d{color:var(--muted);font-weight:500;font-variant-numeric:tabular-nums}
+
+.logo-drop{border:1px dashed var(--line);border-radius:8px;padding:10px;display:flex;align-items:center;gap:10px;background:var(--panel2)}
+.logo-drop img{height:32px;max-width:120px;object-fit:contain;background:#fff;border-radius:4px;padding:2px}
+.pairs{display:flex;flex-wrap:wrap;gap:6px}
+.pair{width:44px;height:30px;border-radius:6px;border:1px solid var(--line);padding:0;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;background:none}
+.pair span{display:block}
+.pair[aria-pressed="true"]{outline:2px solid var(--accent);outline-offset:1px}
+.sw{width:30px;height:30px;border-radius:6px;border:1px solid var(--line);padding:0}
+.sw[aria-pressed="true"]{outline:2px solid var(--accent);outline-offset:1px}
+.colrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.colrow>div{min-width:0}.colrow .c{display:flex;align-items:center;gap:6px;min-width:0}
+.colrow input[type=color]{width:38px;height:32px;padding:2px;border-radius:6px;flex:0 0 auto}
+.colrow input[type=text]{flex:1 1 0;min-width:0;width:100%;padding:8px 6px;font-size:12px;font-variant-numeric:tabular-nums}
+.adv{font-size:12px;color:var(--muted);cursor:pointer;margin-top:6px}
+.adv summary{list-style:none;text-decoration:underline dotted}
+.adv summary::-webkit-details-marker{display:none}
+.fontrow{display:flex;gap:6px}
+.fontrow select{flex:1;min-width:0}
+.fontrow input{display:none}
+
+.kinds{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.kinds button{border:1px solid var(--line);background:var(--panel2);border-radius:8px;padding:8px 6px;font-size:12px;font-weight:700}
+.kinds button[aria-pressed="true"]{background:var(--hi);color:#17191F;border-color:var(--hi)}
+.refs{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.refs .r{position:relative;width:56px;height:56px;border-radius:6px;overflow:hidden;border:1px solid var(--line);background:#222}
+.refs .r img{width:100%;height:100%;object-fit:cover;display:block}
+.refs .r i{position:absolute;left:3px;top:3px;background:var(--hi);color:#17191F;font:700 10px "Unbounded",sans-serif;border-radius:3px;padding:1px 4px;font-style:normal}
+.refs .r button{position:absolute;right:2px;top:2px;width:18px;height:18px;border:0;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:11px;line-height:18px;padding:0}
+.refs .add{width:56px;height:56px;border:1px dashed var(--line);border-radius:6px;background:var(--panel2);font-size:20px;color:var(--muted)}
+.sub{border-left:3px solid var(--hi);padding-left:10px;margin:10px 0}
+.prompt-box{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px;font-size:12.5px;line-height:1.45;white-space:pre-wrap;max-height:150px;overflow:auto}
+.steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.steps3 div{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px;font-size:12px;line-height:1.35}
+.steps3 b{display:block;font:700 11px "Unbounded",sans-serif;margin-bottom:3px;color:var(--hi)}
+.drop{border:2px dashed var(--line);border-radius:10px;padding:14px;text-align:center;color:var(--muted);font-size:13px;background:var(--panel2);margin-top:8px}
+.drop.over{border-color:var(--accent);color:var(--accent)}
+.drop b{color:var(--ink)}
+.drop input{display:none}
+.note{font-size:12px;color:var(--muted);margin-top:8px;padding:8px 10px;border-radius:8px;background:var(--panel2)}
+
+.layouts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.layouts button,.overlays button{border:1px solid var(--line);background:var(--panel2);border-radius:8px;padding:6px;display:flex;flex-direction:column;gap:5px;align-items:center;font-size:11px;font-weight:600;line-height:1.2}
+.layouts button[aria-pressed="true"],.overlays button[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.layouts svg,.overlays svg{width:100%;height:auto;display:block}
+.overlays{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+
+/* stage */
+.stage{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;min-width:0}
+.stage-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.stage-head h2{font:700 15px "Unbounded",sans-serif;color:var(--hi)}
+.stage-head .dims{color:var(--muted);font-variant-numeric:tabular-nums;font-size:12px}
+.stage-head .tools{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.toggle{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--muted)}
+.toggle input{width:auto}
+.canvas-wrap{position:relative;background:radial-gradient(circle,rgba(255,255,255,.09) 1px,transparent 1.2px) 0 0/18px 18px,#0A0C11;border:1px solid var(--line);border-radius:10px;padding:20px;display:grid;place-items:center;min-height:200px}
+#c{max-width:100%;max-height:70vh;width:auto;height:auto;display:block;box-shadow:var(--shadow);background:#222;cursor:grab;touch-action:none}
+#c.drag{cursor:grabbing}
+.sample{position:absolute;top:8px;left:8px;background:var(--hi);color:#17191F;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px}
+.dragtip{position:absolute;bottom:8px;right:10px;font-size:11px;color:var(--muted);background:var(--panel2);border:1px solid var(--line);padding:2px 8px;border-radius:999px}
+.stage-foot{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.stage-foot .hint{margin:0}
+
+/* checks */
+.checks{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+.checks h2{font:700 14px "Unbounded",sans-serif;margin-bottom:4px;color:var(--hi)}
+.checks .lead{font-size:12px;color:var(--muted);margin:0 0 8px}
+.rule{display:grid;grid-template-columns:18px 1fr;gap:10px;padding:9px 0;border-top:1px solid var(--line);align-items:start}
+.rule:first-of-type{border-top:0}
+.rule .dot{width:14px;height:14px;border-radius:50%;margin-top:3px;background:var(--line)}
+.rule[data-s="ok"] .dot{background:var(--ok)}
+.rule[data-s="warn"] .dot{background:var(--warn)}
+.rule[data-s="bad"] .dot{background:var(--bad)}
+.rule b{display:block;font-size:13px}
+.rule span{font-size:12px;color:var(--muted)}
+
+/* modal, toast */
+.modal{position:fixed;inset:0;background:rgba(5,7,10,.75);display:grid;place-items:center;padding:16px;z-index:50}
+.modal .card{background:var(--panel);color:var(--ink);border-radius:12px;max-width:560px;width:100%;padding:20px;box-shadow:var(--shadow);max-height:90vh;overflow:auto}
+.modal h3{font:700 16px "Unbounded",sans-serif;margin-bottom:8px}
+.modal p{margin:8px 0;max-width:62ch}
+.modal .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+.modal img{max-width:100%;display:block;border-radius:6px;box-shadow:var(--shadow)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--hi);color:#17191F;padding:10px 16px;border-radius:999px;font-weight:600;box-shadow:var(--shadow);z-index:60;opacity:0;transition:opacity .2s;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+
+<header class="top">
+  <div class="brand"><i></i>Обкладник</div>
+  <div class="spacer"></div>
+  <div class="examples">Приклади: <span id="presetBtns"></span></div>
+</header>
+
+<section class="about">
+  <div class="mark">О</div>
+  <div>
+    <p>Обкладник — ваш помічник для швидких обкладинок. Додайте заголовок, рубрику й картинку, а він збере макет для статті, YouTube, Instagram чи Stories у стилі вашої редакції.</p>
+    <p>Якщо для матеріалу потрібна окрема ілюстрація чи колаж, Обкладник допоможе підготувати промпт для ChatGPT.</p>
+  </div>
+</section>
+
+<div class="ws">
+  <aside class="side">
+
+    <details class="step" open>
+      <summary><span class="n">1</span>Формат<span class="st" id="fmtSt"></span></summary>
+      <div class="body">
+        <div class="fmt" id="fmtList"></div>
+        <p class="hint">Один макет — усі формати. Перемикайте й експортуйте кожен.</p>
+      </div>
+    </details>
+
+    <details class="step">
+      <summary><span class="n">2</span>Стиль редакції<span class="st" id="brandSt"></span></summary>
+      <div class="body">
+        <div class="field"><label for="brandName">Назва видання</label><input id="brandName" placeholder="Наприклад: Міські новини"></div>
+        <div class="field"><label>Логотип (PNG із прозорістю)</label>
+          <div class="logo-drop"><img id="logoPrev" alt="" hidden><span id="logoNone" class="hint" style="margin:0">Немає логотипа — стоятиме назва</span><span style="flex:1"></span><button class="btn sm" id="logoPick">Завантажити</button><input type="file" id="logoFile" accept="image/*" hidden></div>
+        </div>
+        <div class="field" id="logoColorsField" hidden><label>Кольори з вашого логотипа — натисніть, щоб зробити основним</label><div class="pairs" id="logoColors"></div><p class="hint">Другий клік по тому ж кольору робить його акцентом.</p></div>
+        <div class="field"><label>Або готова пара «основний + акцент»</label><div class="pairs" id="pairs"></div></div>
+        <div class="field">
+          <div class="colrow">
+            <div><label for="colPrimary">Основний</label><div class="c"><input type="color" id="colPrimary" value="#0E1F5B"><input type="text" id="colPrimaryT" value="#0E1F5B" maxlength="7" aria-label="Код основного кольору"></div></div>
+            <div><label for="colAccent">Акцент</label><div class="c"><input type="color" id="colAccent" value="#FFD23F"><input type="text" id="colAccentT" value="#FFD23F" maxlength="7" aria-label="Код акцентного кольору"></div></div>
+          </div>
+          <p class="hint">Основний — для панелей і плашок, акцент — для рубрики й виділених слів. Код кольору потрібен лише якщо він у вас є.</p>
+        </div>
+        <div class="field"><label for="fontSel">Шрифт заголовка</label>
+          <div class="fontrow">
+            <select id="fontSel"></select>
+            <button class="btn sm" id="fontPick" title="Завантажити свій шрифт (.ttf, .otf, .woff)">Свій шрифт</button>
+            <input type="file" id="fontFile" accept=".ttf,.otf,.woff,.woff2,font/*">
+          </div>
+          <p class="hint">Є фірмовий шрифт редакції? Завантажте файл — він зʼявиться у списку.</p>
+        </div>
+        <p class="hint">Стиль запамʼятовується у цьому браузері — наступного разу все вже буде на місці.</p>
+      </div>
+    </details>
+
+    <details class="step">
+      <summary><span class="n">3</span>Картинка<span class="st" id="imgSt"></span></summary>
+      <div class="body">
+        <div class="drop" id="drop" style="margin-top:0"><b>Вставте свою картинку</b> (Ctrl/⌘+V), перетягніть сюди або <label for="imgFile" style="display:inline;color:var(--accent);cursor:pointer;font-weight:700">оберіть файл</label><input type="file" id="imgFile" accept="image/*"><div class="hint" style="margin-top:4px">Потім посуньте її мишкою прямо на макеті.</div></div>
+        <p class="note">Обкладник не генерує картинки сам — він готує промпт і збирає все для вашого ChatGPT. Нижче — якщо картинку треба створити.</p>
+
+        <div class="field" style="margin-top:12px"><label>Що створюємо</label><div class="kinds" id="kinds"></div></div>
+        <div class="field"><label>Жанр матеріалу</label><div class="chips" id="genreChips"></div></div>
+        <div class="field"><label for="topic">Про що матеріал</label><input id="topic" placeholder="Наприклад: тарифи на електроенергію зростуть із жовтня"></div>
+        <div class="field"><label>Настрій</label><div class="chips" id="moodChips"></div></div>
+
+        <div class="sub" id="subCollage" hidden>
+          <div class="field"><label for="heroEl">Головний елемент — фокус колажу</label><input id="heroEl" placeholder="Наприклад: лічильник електроенергії крупним планом"></div>
+          <div class="field"><label for="sideEls">Додаткові елементи, по одному в рядку (2–3)</label><textarea id="sideEls" style="min-height:70px" placeholder="платіжка з цифрами&#10;лампочка&#10;рука з монетами"></textarea></div>
+          <div class="field"><label>Манера колажу</label><div class="chips" id="collageChips"></div></div>
+          <div class="field"><label>Ваші фото для колажу (до 4) — необовʼязково</label>
+            <div class="refs" id="collageRefs"></div>
+            <p class="hint">Фото 1 стане головним. Кнопка збирає їх в один пронумерований аркуш — вставте його в ChatGPT разом із промптом.</p>
+            <button class="btn sm" id="copyCollageSheet" style="margin-top:6px">Скопіювати аркуш фото</button>
+          </div>
+        </div>
+
+        <div class="sub" id="subIllu" hidden>
+          <div class="field"><label>Стиль ілюстрації</label><div class="chips" id="styleChips"></div></div>
+          <div class="field"><label>Референси стилю та кольору (до 3) — необовʼязково</label>
+            <div class="refs" id="styleRefs"></div>
+            <p class="hint">ChatGPT візьме з них манеру й палітру, а не зміст. Кнопка збирає референси в один аркуш — вставте його в чат разом із промптом.</p>
+            <button class="btn sm" id="copyStyleSheet" style="margin-top:6px">Скопіювати аркуш референсів</button>
+          </div>
+        </div>
+
+        <div class="field"><label>Промпт для ChatGPT <span class="chips" style="display:inline-flex;margin-left:6px;vertical-align:middle"><button class="chip" id="langEn" aria-pressed="true" style="padding:2px 8px">EN</button><button class="chip" id="langRu" aria-pressed="false" style="padding:2px 8px">UA</button></span></label>
+          <div class="prompt-box" id="promptBox"></div>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="copyPrompt">Скопіювати промпт</button>
+          <a class="btn" style="color:var(--blue);text-decoration:none" href="https://chatgpt.com/" target="_blank" rel="noopener">Відкрити ChatGPT ↗</a>
+        </div>
+        <div class="steps3">
+          <div><b>1</b>Скопіюйте промпт</div>
+          <div><b>2</b>Згенеруйте у своєму ChatGPT</div>
+          <div><b>3</b>Вставте картинку сюди — Ctrl/⌘+V</div>
+        </div>
+      </div>
+    </details>
+
+    <details class="step">
+      <summary><span class="n">4</span>Текст і розкладка<span class="st" id="txtSt"></span></summary>
+      <div class="body">
+        <div class="field"><label for="kicker">Рубрика</label><input id="kicker" placeholder="Економіка"></div>
+        <div class="field"><label for="headline">Заголовок</label><textarea id="headline" style="min-height:64px" placeholder="Заголовок обкладинки"></textarea>
+          <p class="hint">Одна думка, до 7 слів. Слово в <code>*зірочках*</code> стане кольору акценту. Enter — перенос рядка там, де хочете ви.</p></div>
+        <div class="field"><label for="author">Автор / підпис</label><input id="author" placeholder="Імʼя автора або порожньо"></div>
+        <div class="field"><label>Де стоїть текст</label><div class="layouts" id="layouts"></div></div>
+        <div class="field" id="overlayField"><label>Підкладка під текстом</label><div class="overlays" id="overlays"></div>
+          <div id="darkRow" style="margin-top:8px"><label for="dark">Сила затемнення</label><input type="range" id="dark" min="20" max="100" value="70"></div>
+        </div>
+      </div>
+    </details>
+  </aside>
+
+  <section class="stage">
+    <div class="stage-head">
+      <h2 id="stageTitle">YouTube</h2><span class="dims" id="stageDims">1280 × 720</span>
+      <div class="tools">
+        <label class="toggle"><input type="checkbox" id="safeToggle"> службові зони</label>
+      </div>
+    </div>
+    <div class="canvas-wrap" id="cw">
+      <canvas id="c" width="1280" height="720"></canvas>
+      <span class="sample" id="sampleTag">приклад — вставте свою картинку</span>
+      <span class="dragtip">Тягніть картинку, щоб посунути</span>
+    </div>
+    <div class="stage-foot">
+      <button class="btn primary" id="exportBtn">Завантажити PNG</button>
+      <button class="btn" id="copyImg">Скопіювати картинку</button>
+      <span class="hint">У повному розмірі формату.</span>
+    </div>
+  </section>
+
+  <aside class="checks">
+    <h2>Перевірка</h2>
+    <p class="lead">Те, що Обкладник перевіряє сам, щоразу коли ви щось змінюєте.</p>
+    <div id="ruleList"></div>
+  </aside>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+const $ = s => document.querySelector(s);
+const FORMATS = [
+  {id:'yt',   name:'YouTube',            w:1280,h:720,  ratio:'16:9'},
+  {id:'og',   name:'Стаття (OG)',        w:1200,h:630,  ratio:'1.91:1'},
+  {id:'ig45', name:'Instagram 4:5',      w:1080,h:1350, ratio:'4:5'},
+  {id:'ig11', name:'Instagram квадрат',  w:1080,h:1080, ratio:'1:1'},
+  {id:'story',name:'Stories / Reels',    w:1080,h:1920, ratio:'9:16'},
+];
+const FONTS = [
+  {g:'Гротески', list:[['Unbounded','700'],['Manrope','800'],['Montserrat','800'],['Rubik','800'],['Golos Text','800'],['Arsenal','700'],['Onest','800']]},
+  {g:'Вузькі', list:[['Oswald','600'],['Roboto Condensed','700'],['Fira Sans Condensed','700']]},
+  {g:'Антиква', list:[['Playfair Display','700'],['Lora','700'],['Merriweather','900'],['Cormorant Garamond','700']]},
+  {g:'Брускові', list:[['Roboto Slab','700'],['Bitter','800']]},
+  {g:'Акцидентні', list:[['Russo One','400'],['Comfortaa','700']]},
+];
+const PAIRS = [['#17191F','#FFFFFF'],['#FFFFFF','#17191F'],['#0E1F5B','#FFD23F'],['#1B4DD8','#FFFFFF'],['#B3261E','#FFFFFF'],['#0B6B3A','#F2E8CF'],['#5B2A86','#F6C445'],['#F2542D','#17191F']];
+const GENRES = [
+  {id:'news', name:'Новина', t:'urgent, factual, here-and-now', tu:'терміново, фактично, тут і зараз', en:'documentary press photograph, decisive moment, natural light, real location, slight motion', ru:'документальна репортажна фотографія, вирішальний момент, природне світло, реальна локація'},
+  {id:'interview', name:'Інтервʼю', t:'personal, human-centred, one character', tu:'особисто, про людину, один герой', en:'editorial portrait, one person, shallow depth of field, studio or window light, calm expression, plenty of negative space', ru:'редакційний портрет, одна людина, мала глибина різкості, спокійний вираз, багато повітря в кадрі'},
+  {id:'invest', name:'Розслідування', t:'serious, dark, something hidden being revealed', tu:'серйозно, темно, приховане виходить назовні', en:'moody investigative still life, documents, hard side light, deep shadows, cold palette, cinematic', ru:'похмурий натюрморт для розслідування, документи, жорстке бокове світло, глибокі тіні, холодна палітра'},
+  {id:'explain', name:'Пояснювалка', t:'clear, didactic, one idea explained simply', tu:'зрозуміло, дидактично, одна ідея просто', en:'clean conceptual photograph, one clear metaphor, simple objects, lots of empty background', ru:'чиста концептуальна фотографія, одна зрозуміла метафора, прості предмети, багато порожнього фону'},
+  {id:'column', name:'Колонка', t:'reflective, symbolic, quiet', tu:'рефлексивно, символічно, тихо', en:'minimalist symbolic photograph, single object on plain background, soft light, quiet mood', ru:'мінімалістична символічна фотографія, один предмет на простому фоні, мʼяке світло'},
+];
+const MOODS = [
+  {id:'neutral', name:'Нейтрально', en:'neutral, restrained', ru:'нейтрально, стримано'},
+  {id:'alarm', name:'Тривожно', en:'tense, alarming, high contrast', ru:'тривожно, напружено, високий контраст'},
+  {id:'warm', name:'Тепло', en:'warm, hopeful, golden hour', ru:'тепло, з надією, золота година'},
+  {id:'ironic', name:'Іронічно', en:'playful, slightly ironic, bright colors', ru:'грайливо, з іронією, яскраві кольори'},
+];
+const KINDS = [{id:'photo', name:'Фото'},{id:'collage', name:'Колаж'},{id:'illu', name:'Ілюстрація'}];
+const COLLAGE = [
+  {id:'cutout', name:'Вирізки', en:'paper cut-out collage: elements cut along their contours with a thin white paper edge, layered with subtle drop shadows, slightly tilted', ru:'колаж із паперових вирізок: елементи вирізані по контуру з тонким білим краєм, накладені шарами з легкими тінями, трохи нахилені'},
+  {id:'torn', name:'Рваний папір', en:'torn paper collage: rough torn edges, overlapping layers, visible paper texture, tactile and editorial', ru:'колаж із рваного паперу: нерівні розірвані краї, шари, що перекриваються, видима текстура паперу'},
+  {id:'duotone', name:'Дуотон', en:'graphic duotone collage: every element toned in the same two colors, halftone texture, bold flat background shapes', ru:'графічний дуотон-колаж: усі елементи тоновані в одні й ті самі два кольори, растрова текстура, великі пласкі форми фону'},
+  {id:'clean', name:'Чистий', en:'clean photographic montage: elements blended seamlessly with matched lighting and perspective, so it reads as one photograph', ru:'чистий фотомонтаж: елементи зведені безшовно, зі збігом світла й перспективи, щоб читалося як одне фото'},
+];
+const STYLES = [
+  {id:'flat', name:'Пласка векторна', en:'flat vector illustration, bold simple shapes, limited palette, no gradients, clean edges', ru:'пласка векторна ілюстрація, великі прості форми, обмежена палітра, без градієнтів, чисті краї'},
+  {id:'ink', name:'Редакційна графіка', en:'editorial ink illustration, confident line work, spot color, newspaper op-ed style', ru:'редакційна графіка, впевнена лінія, один акцентний колір, стиль газетної колонки'},
+  {id:'clay', name:'3D-пластик', en:'soft 3D render, matte clay-like materials, rounded forms, gentle studio lighting', ru:'мʼякий 3D-рендер, матові пластилінові матеріали, округлі форми, мʼяке студійне світло'},
+  {id:'retro', name:'Ретро-плакат', en:'mid-century poster illustration, grainy texture, muted retro palette, screen-print look', ru:'плакатна ілюстрація середини XX століття, зернистість, приглушена ретро-палітра, ефект шовкографії'},
+  {id:'water', name:'Акварель', en:'loose watercolor illustration, soft washes, visible paper texture, white space', ru:'вільна акварельна ілюстрація, мʼякі заливки, текстура паперу, повітря'},
+  {id:'iso', name:'Ізометрія', en:'isometric illustration, small clean scene, pastel palette, precise geometry', ru:'ізометрична ілюстрація, невелика акуратна сцена, пастельна палітра, точна геометрія'},
+];
+const LAYOUTS = [{id:'bottom',name:'Знизу'},{id:'top',name:'Зверху'},{id:'center',name:'По центру'},{id:'panel',name:'Панель бренду'}];
+const OVERLAYS = [{id:'none',name:'Немає'},{id:'darken',name:'Затемнення'},{id:'plate',name:'Плашка'}];
+const PRESETS = [
+  {name:'Новина', kicker:'Економіка', headline:'*Світло* подорожчає: що зміниться у платіжках', author:'', layout:'bottom', overlay:'darken', dark:70, kind:'photo', genre:'news', mood:'alarm', topic:'Тарифи на електроенергію зростуть із жовтня', sample:'city', fx:60, fy:40},
+  {name:'Інтервʼю', kicker:'Інтервʼю', headline:'«До зими не готові, але *будемо*»', author:'Розмовляла Дарʼя Сенчихіна', layout:'panel', overlay:'none', dark:70, kind:'photo', genre:'interview', mood:'neutral', topic:'Розмова з головою ОСББ про підготовку будинку до зими', sample:'portrait', fx:50, fy:30},
+  {name:'Пояснювалка', kicker:'Пояснюємо', headline:'Як читати нову *платіжку*\nза дві хвилини', author:'', layout:'top', overlay:'plate', dark:70, kind:'illu', genre:'explain', mood:'warm', topic:'Як влаштована нова платіжка за комунальні послуги', sample:'flat', fx:50, fy:50},
+];
+
+const state = {
+  fmt:'yt', genre:'news', mood:'alarm', lang:'en', layout:'bottom', overlay:'darken', dark:70,
+  kind:'photo', collageStyle:'cutout', illuStyle:'flat', heroEl:'', sideEls:'', collagePhotos:[], styleRefs:[],
+  topic:'Тарифи на електроенергію зростуть із жовтня', kicker:'Економіка', headline:'*Світло* подорожчає: що зміниться у платіжках', author:'',
+  fx:60, fy:40, safe:false, sample:'city',
+  brand:{name:'Міські новини', logo:null, primary:'#0E1F5B', accent:'#FFD23F', font:'Unbounded', customFont:null},
+  imgSrc:null,
+};
+let img=null, logoImg=null, customFontLoaded=null;
+
+/* ---------- persistence ---------- */
+function loadKit(){ try{ const k=localStorage.getItem('obkladnyk.kit'); if(k) Object.assign(state.brand, JSON.parse(k)); }catch(e){} }
+function saveKit(){ try{ localStorage.setItem('obkladnyk.kit', JSON.stringify(state.brand)); }catch(e){ toast('Стиль задіяно, але браузер не зміг його запамʼятати (завеликий файл шрифту чи лого)'); } }
+
+/* ---------- fonts ---------- */
+function fontWeight(name){ for(const g of FONTS) for(const [n,w] of g.list) if(n===name) return w; return '700'; }
+function buildFontSelect(){
+  const sel=$('#fontSel'); sel.innerHTML='';
+  if(state.brand.customFont){ const o=document.createElement('option'); o.value='__custom'; o.textContent='Свій: '+state.brand.customFont.name; sel.appendChild(o); }
+  FONTS.forEach(g=>{ const og=document.createElement('optgroup'); og.label=g.g; g.list.forEach(([n])=>{ const o=document.createElement('option'); o.value=n; o.textContent=n; og.appendChild(o); }); sel.appendChild(og); });
+  sel.value= state.brand.font==='__custom' && !state.brand.customFont ? 'Unbounded' : state.brand.font;
+}
+async function loadCustomFont(){ const cf=state.brand.customFont; if(!cf||customFontLoaded===cf.data) return; try{ const ff=new FontFace('ObkCustom', `url(${cf.data})`); await ff.load(); document.fonts.add(ff); customFontLoaded=cf.data; }catch(e){ toast('Не вдалося прочитати файл шрифту'); } }
+function currentFont(){ if(state.brand.font==='__custom' && state.brand.customFont) return {family:'ObkCustom', weight:'700'}; const f= state.brand.font==='__custom' ? 'Unbounded' : state.brand.font; return {family:f, weight:fontWeight(f)}; }
+async function ensureFonts(){ const cf=currentFont(); try{ await Promise.all([document.fonts.load(`${cf.weight} 40px "${cf.family}"`), document.fonts.load('700 40px "Manrope"'), document.fonts.load('600 40px "Manrope"'), document.fonts.load('700 40px "Unbounded"')]); }catch(e){} }
+
+/* ---------- UI build ---------- */
+function buildFormats(){ const box=$('#fmtList'); box.innerHTML=''; FORMATS.forEach(f=>{ const b=document.createElement('button'); b.type='button'; b.setAttribute('aria-pressed',state.fmt===f.id); const s=36/Math.max(f.w,f.h); b.innerHTML=`<span class="box" style="width:${Math.round(f.w*s)}px;height:${Math.round(f.h*s)}px"></span>${f.name}<span class="d">${f.w}×${f.h}</span>`; b.onclick=()=>{state.fmt=f.id; buildFormats(); render();}; box.appendChild(b); }); }
+function buildChips(sel,list,key){ const box=$(sel); box.innerHTML=''; list.forEach(g=>{ const c=document.createElement('button'); c.type='button'; c.className='chip'; c.textContent=g.name; c.setAttribute('aria-pressed',state[key]===g.id); c.onclick=()=>{state[key]=g.id; buildChips(sel,list,key); updatePrompt();}; box.appendChild(c); }); }
+function buildKinds(){ const box=$('#kinds'); box.innerHTML=''; KINDS.forEach(k=>{ const b=document.createElement('button'); b.type='button'; b.textContent=k.name; b.setAttribute('aria-pressed',state.kind===k.id); b.onclick=()=>{state.kind=k.id; buildKinds(); updatePrompt();}; box.appendChild(b); }); $('#subCollage').hidden=state.kind!=='collage'; $('#subIllu').hidden=state.kind!=='illu'; }
+const ICON={
+  bottom:`<svg viewBox="0 0 64 36"><rect width="64" height="36" rx="3" fill="#8a8f9a"/><rect x="6" y="22" width="30" height="4" fill="#fff"/><rect x="6" y="28" width="20" height="4" fill="#fff"/></svg>`,
+  top:`<svg viewBox="0 0 64 36"><rect width="64" height="36" rx="3" fill="#8a8f9a"/><rect x="6" y="6" width="30" height="4" fill="#fff"/><rect x="6" y="12" width="20" height="4" fill="#fff"/></svg>`,
+  center:`<svg viewBox="0 0 64 36"><rect width="64" height="36" rx="3" fill="#8a8f9a"/><rect x="17" y="14" width="30" height="4" fill="#fff"/><rect x="22" y="20" width="20" height="4" fill="#fff"/></svg>`,
+  panel:`<svg viewBox="0 0 64 36"><rect width="64" height="36" rx="3" fill="#8a8f9a"/><rect width="30" height="36" fill="#1B4DD8"/><rect x="5" y="12" width="20" height="4" fill="#fff"/><rect x="5" y="18" width="16" height="4" fill="#fff"/></svg>`,
+  none:`<svg viewBox="0 0 64 36"><rect width="64" height="36" rx="3" fill="#8a8f9a"/><rect x="6" y="24" width="30" height="4" fill="#fff"/></svg>`,
+  darken:`<svg viewBox="0 0 64 36"><rect width="64" height="36" rx="3" fill="#8a8f9a"/><rect y="14" width="64" height="22" fill="#2a2d33" opacity=".8"/><rect x="6" y="24" width="30" height="4" fill="#fff"/></svg>`,
+  plate:`<svg viewBox="0 0 64 36"><rect width="64" height="36" rx="3" fill="#8a8f9a"/><rect x="4" y="21" width="36" height="10" fill="#1B4DD8"/><rect x="7" y="24" width="30" height="4" fill="#fff"/></svg>`,
+};
+function buildLayouts(){ const box=$('#layouts'); box.innerHTML=''; LAYOUTS.forEach(l=>{ const b=document.createElement('button'); b.type='button'; b.setAttribute('aria-pressed',state.layout===l.id); b.innerHTML=ICON[l.id]+l.name; b.onclick=()=>{state.layout=l.id; buildLayouts(); render();}; box.appendChild(b); }); $('#overlayField').hidden= state.layout==='panel'; }
+function buildOverlays(){ const box=$('#overlays'); box.innerHTML=''; OVERLAYS.forEach(o=>{ const b=document.createElement('button'); b.type='button'; b.setAttribute('aria-pressed',state.overlay===o.id); b.innerHTML=ICON[o.id]+o.name; b.onclick=()=>{state.overlay=o.id; buildOverlays(); render();}; box.appendChild(b); }); $('#darkRow').hidden= state.overlay!=='darken'; }
+function buildRules(){ const R=[
+    {id:'words', t:'Заголовок короткий', d:'До 7 слів — обкладинку читають за секунду.'},
+    {id:'contrast', t:'Текст читається', d:'Контраст між текстом і тим, що під ним.'},
+    {id:'logo', t:'Видання підписане', d:'Логотип або назва на місці.'},
+    {id:'safe', t:'Службові зони вільні', d:'Таймкод YouTube, кнопки в Stories, обрізка в сітці.'},
+  ]; const box=$('#ruleList'); box.innerHTML=''; R.forEach(r=>{ const d=document.createElement('div'); d.className='rule'; d.id='rule-'+r.id; d.dataset.s='none'; d.innerHTML=`<span class="dot"></span><div><b>${r.t}</b><span>${r.d}</span></div>`; box.appendChild(d); }); }
+function setRule(id,s,txt){ const el=$('#rule-'+id); if(!el) return; el.dataset.s=s; if(txt) el.querySelector('span:last-child').textContent=txt; }
+function buildPairs(){ const box=$('#pairs'); box.innerHTML=''; PAIRS.forEach(([p,a])=>{ const b=document.createElement('button'); b.type='button'; b.className='pair'; b.title=`${p} + ${a}`; b.setAttribute('aria-pressed', state.brand.primary.toUpperCase()===p && state.brand.accent.toUpperCase()===a); b.innerHTML=`<span style="background:${p}"></span><span style="background:${a}"></span>`; b.onclick=()=>{ state.brand.primary=p; state.brand.accent=a; syncColorInputs(); saveKit(); buildPairs(); render(); }; box.appendChild(b); }); }
+function buildLogoColors(cols){ const f=$('#logoColorsField'), box=$('#logoColors'); box.innerHTML=''; if(!cols||!cols.length){ f.hidden=true; return; } f.hidden=false;
+  cols.forEach(hex=>{ const b=document.createElement('button'); b.type='button'; b.className='sw'; b.style.background=hex; b.title=hex; b.setAttribute('aria-pressed', state.brand.primary.toUpperCase()===hex); b.onclick=()=>{ if(state.brand.primary.toUpperCase()===hex){ state.brand.accent=hex; toast('Тепер це акцент'); } else { state.brand.primary=hex; toast('Тепер це основний колір'); } syncColorInputs(); saveKit(); buildLogoColors(cols); buildPairs(); render(); }; box.appendChild(b); }); }
+function syncColorInputs(){ const B=state.brand; $('#colPrimary').value=B.primary; $('#colPrimaryT').value=B.primary; $('#colAccent').value=B.accent; $('#colAccentT').value=B.accent; }
+function buildPresets(){ const box=$('#presetBtns'); box.innerHTML=''; PRESETS.forEach(p=>{ const b=document.createElement('button'); b.type='button'; b.className='chip'; b.textContent=p.name; b.onclick=()=>applyPreset(p); box.appendChild(b); }); }
+function applyPreset(p){ Object.assign(state,{kicker:p.kicker,headline:p.headline,author:p.author,layout:p.layout,overlay:p.overlay,dark:p.dark,kind:p.kind,genre:p.genre,mood:p.mood,topic:p.topic,sample:p.sample,fx:p.fx,fy:p.fy});
+  $('#kicker').value=p.kicker; $('#headline').value=p.headline; $('#author').value=p.author; $('#topic').value=p.topic; $('#dark').value=p.dark;
+  buildLayouts(); buildOverlays(); buildKinds(); buildChips('#genreChips',GENRES,'genre'); buildChips('#moodChips',MOODS,'mood'); updatePrompt(); render(); }
+
+/* ---------- logo colors ---------- */
+function extractColors(im){
+  const cv=document.createElement('canvas'); const s=Math.min(1,120/Math.max(im.width,im.height)); cv.width=Math.max(1,Math.round(im.width*s)); cv.height=Math.max(1,Math.round(im.height*s)); const x=cv.getContext('2d'); x.drawImage(im,0,0,cv.width,cv.height);
+  const d=x.getImageData(0,0,cv.width,cv.height).data; const buckets=new Map();
+  for(let i=0;i<d.length;i+=4){ if(d[i+3]<200) continue; const r=d[i],g=d[i+1],b=d[i+2]; const k=((r>>4)<<8)|((g>>4)<<4)|(b>>4); const e=buckets.get(k)||{n:0,r:0,g:0,b:0}; e.n++; e.r+=r; e.g+=g; e.b+=b; buckets.set(k,e); }
+  const arr=[...buckets.values()].map(e=>({n:e.n,r:e.r/e.n,g:e.g/e.n,b:e.b/e.n})).sort((a,b)=>b.n-a.n);
+  const out=[]; for(const c of arr){ const hex='#'+[c.r,c.g,c.b].map(v=>Math.round(v).toString(16).padStart(2,'0')).join('').toUpperCase(); if(out.some(h=>colorDist(h,hex)<60)) continue; out.push(hex); if(out.length>=5) break; }
+  return out;
+}
+function colorDist(a,b){ const p=h=>[1,3,5].map(i=>parseInt(h.substr(i,2),16)); const [r1,g1,b1]=p(a),[r2,g2,b2]=p(b); return Math.hypot(r1-r2,g1-g2,b1-b2); }
+
+/* ---------- prompt ---------- */
+function buildPrompt(){
+  const f=FORMATS.find(x=>x.id===state.fmt), g=GENRES.find(x=>x.id===state.genre), m=MOODS.find(x=>x.id===state.mood);
+  const tall=f.h>f.w;
+  const zone= state.layout==='panel' ? (tall?'bottom half':'left half') : state.layout==='top' ? (tall?'upper third':'upper-left third') : state.layout==='center' ? 'centre' : (tall?'lower third':'lower-left third');
+  const zoneUa={'bottom half':'нижня половина','left half':'ліва половина','upper third':'верхня третина','upper-left third':'верхня ліва третина','centre':'центральна частина','lower third':'нижня третина','lower-left third':'нижня ліва третина'}[zone];
+  const subj= state.layout==='center' ? 'edges' : state.layout==='top' ? (tall?'lower':'right') : (tall?'upper':'right');
+  const subjUa={edges:'по краях',lower:'у нижній частині',upper:'у верхній частині',right:'праворуч'}[subj];
+  const topic=state.topic.trim()||'(тема)'; const en=state.lang==='en';
+  const tailEn=`Composition: keep the ${zone} of the frame calm and uncluttered — a headline will be placed there later. Main subject ${subj==='edges'?'towards the edges':'in the '+subj+' part'}.\nStrictly no text, no letters, no numbers, no logos, no watermarks anywhere in the image.\nAspect ratio ${f.ratio} (${f.w}×${f.h}).`;
+  const tailUa=`Композиція: ${zoneUa} кадру спокійна й порожня — туди ляже заголовок. Головний обʼєкт — ${subjUa}.\nСуворо без тексту, літер, цифр, логотипів і водяних знаків.\nСпіввідношення сторін ${f.ratio} (${f.w}×${f.h}).`;
+  if(state.kind==='collage'){
+    const cs=COLLAGE.find(x=>x.id===state.collageStyle); const hero=state.heroEl.trim(); const sides=state.sideEls.split('\n').map(s=>s.trim()).filter(Boolean).slice(0,3); const n=state.collagePhotos.length;
+    if(en){ const src= n ? `Use the attached numbered sheet as source material: photo 1 is the main element, photos ${n>1?`2–${n}`:'2+'} are supporting. Keep people and objects recognizable, do not invent new faces.` : `Elements: main — ${hero||'(main element)'}; supporting — ${sides.length?sides.join('; '):'(2–3 supporting elements)'}.`;
+      return `Create ONE editorial collage for a news cover. Topic: "${topic}".\n${src}\nHierarchy: the main element is large, sharp and in focus, taking about 60% of the frame. Supporting elements are smaller and arranged organically around it — overlapping, varied scale, never a grid and never evenly spaced.\nManner: ${cs.en}. Unify everything with one color grading and one light direction so it reads as a single image. Genre feel: ${g.t}. Mood: ${m.en}.\n${tailEn}`; }
+    const src= n ? `Використай прикріплений пронумерований аркуш як матеріал: фото 1 — головний елемент, фото ${n>1?`2–${n}`:'2+'} — додаткові. Людей і предмети залиш упізнаваними, не вигадуй нових облич.` : `Елементи: головний — ${hero||'(головний елемент)'}; додаткові — ${sides.length?sides.join('; '):'(2–3 додаткові елементи)'}.`;
+    return `Зроби ОДИН редакційний колаж для обкладинки. Тема: «${topic}».\n${src}\nІєрархія: головний елемент великий, різкий, у фокусі, займає близько 60% кадру. Додаткові — менші, скомпоновані органічно навколо нього: перекриваються, різного масштабу, не сіткою й не рівномірно.\nМанера: ${cs.ru}. Обʼєднай усе одним тонуванням і одним напрямком світла, щоб читалося як одна картинка. Жанр: ${g.tu}. Настрій: ${m.ru}.\n${tailUa}`;
+  }
+  if(state.kind==='illu'){
+    const st=STYLES.find(x=>x.id===state.illuStyle); const n=state.styleRefs.length;
+    if(en){ const ref= n ? `Match the visual style, palette and mood of the attached reference sheet (${n} image${n>1?'s':''}). Use the references for style and color only — do not copy their subjects or composition.` : '';
+      return `Create an illustration for a news cover. Topic: "${topic}" — express it through one clear visual metaphor.\nStyle: ${st.en}. ${ref}\nGenre feel: ${g.t}. Mood: ${m.en}.\n${tailEn}`; }
+    const ref= n ? `Повтори візуальний стиль, палітру й настрій прикріпленого аркуша референсів (${n} зобр.). Референси — лише для стилю та кольору, не копіюй їхні сюжети чи композицію.` : '';
+    return `Зроби ілюстрацію для обкладинки матеріалу. Тема: «${topic}» — передай її через одну зрозумілу візуальну метафору.\nСтиль: ${st.ru}. ${ref}\nЖанр: ${g.tu}. Настрій: ${m.ru}.\n${tailUa}`;
+  }
+  if(en) return `Create an image for a news cover. Topic: "${topic}".\nStyle: ${g.en}. Mood: ${m.en}.\n${tailEn}`;
+  return `Зроби картинку для обкладинки матеріалу. Тема: «${topic}».\nСтиль: ${g.ru}. Настрій: ${m.ru}.\n${tailUa}`;
+}
+function updatePrompt(){ $('#promptBox').textContent=buildPrompt(); }
+
+/* ---------- drawing helpers ---------- */
+function hexLum(hex){ const c=hex.replace('#',''); const [r,g,b]=[0,2,4].map(i=>parseInt(c.substr(i,2),16)/255).map(v=>v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)); return .2126*r+.7152*g+.0722*b; }
+function contrastOn(hex){ return hexLum(hex)>.4 ? '#17191F' : '#FFFFFF'; }
+function cr(l1,l2){ return (Math.max(l1,l2)+.05)/(Math.min(l1,l2)+.05); }
+function parseHeadline(text){ return text.split('\n').map(p=>{ const toks=[]; p.split(/(\*[^*]+\*)/).forEach(seg=>{ if(!seg) return; const hi=seg.startsWith('*')&&seg.endsWith('*')&&seg.length>2; const body=hi?seg.slice(1,-1):seg; const glueFirst= toks.length>0 && !/^\s/.test(body); body.split(/\s+/).filter(Boolean).forEach((w,i)=>toks.push({w,hi,glue:i===0&&glueFirst})); }); return toks; }).filter(t=>t.length); }
+function lineText(toks){ return toks.map((t,i)=>(i>0&&!t.glue?' ':'')+t.w).join(''); }
+function wrapToks(ctx,toks,maxW){ const lines=[]; let cur=[]; for(const t of toks){ const test=[...cur,t]; if(ctx.measureText(lineText(test)).width>maxW && cur.length){ lines.push(cur); cur=[t]; } else cur=test; } if(cur.length) lines.push(cur); return lines; }
+function fitHeadline(ctx,paras,font,weight,maxW,maxLines,start,min){ let size=start, lines=[]; while(size>=min){ ctx.font=`${weight} ${size}px "${font}"`; lines=paras.flatMap(p=>wrapToks(ctx,p,maxW)); const tooWide=lines.some(l=>ctx.measureText(lineText(l)).width>maxW); if(lines.length<=maxLines && !tooWide) break; size-=Math.max(2,Math.round(size*.06)); } return {size,lines}; }
+function drawCover(ctx,im,x,y,w,h,fx,fy){ const s=Math.max(w/im.width,h/im.height); const sw=w/s, sh=h/s; const sx=(im.width-sw)*fx, sy=(im.height-sh)*fy; ctx.drawImage(im,sx,sy,sw,sh,x,y,w,h); }
+function drawSample(ctx,w,h){
+  const fx=state.fx/100, fy=state.fy/100; const k=state.sample;
+  if(k==='portrait'){ const g=ctx.createLinearGradient(0,0,w,h); g.addColorStop(0,'#3a2f2a'); g.addColorStop(1,'#8c6a4f'); ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+    const cx=w*(.35+fx*.5), cy=h*(.25+fy*.5), r=Math.min(w,h)*.22; const rg=ctx.createRadialGradient(cx-r*.3,cy-r*.3,r*.1,cx,cy,r*2.2); rg.addColorStop(0,'rgba(255,214,170,.9)'); rg.addColorStop(1,'rgba(255,214,170,0)'); ctx.fillStyle=rg; ctx.fillRect(0,0,w,h);
+    ctx.fillStyle='rgba(40,28,24,.85)'; ctx.beginPath(); ctx.ellipse(cx,cy,r*.75,r,0,0,Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.ellipse(cx,cy+r*2.2,r*1.8,r*1.5,0,0,Math.PI*2); ctx.fill(); return; }
+  if(k==='flat'){ ctx.fillStyle='#F4E7C3'; ctx.fillRect(0,0,w,h); const cols=['#E9633B','#2F6DB5','#F2B705','#1E8A4C'];
+    for(let i=0;i<4;i++){ ctx.fillStyle=cols[i]; const r=Math.min(w,h)*(.12+i*.05); const cx=w*(.2+i*.2+(fx-.5)*.3), cy=h*(.35+((i%2)?.3:0)+(fy-.5)*.3); if(i%2){ ctx.fillRect(cx-r,cy-r,r*2,r*2); } else { ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fill(); } } return; }
+  const g=ctx.createLinearGradient(0,0,w,h); g.addColorStop(0,'#3b4a6b'); g.addColorStop(.55,'#6c7a99'); g.addColorStop(1,'#d9c8a3'); ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+  const rg=ctx.createRadialGradient(w*(.3+fx*.5),h*(.2+fy*.5),10,w*(.3+fx*.5),h*(.2+fy*.5),Math.max(w,h)*.45); rg.addColorStop(0,'rgba(255,225,160,.95)'); rg.addColorStop(1,'rgba(255,225,160,0)'); ctx.fillStyle=rg; ctx.fillRect(0,0,w,h);
+  ctx.fillStyle='rgba(20,24,40,.35)'; for(let i=0;i<7;i++){ const bw=w*(.05+((i*37)%23)/100); ctx.fillRect((w*(0.55+i*0.06)+(fx-.5)*w*.4)%w, h-bw*1.8*(1+((i*13)%5)/6), bw*.6, h); }
+}
+function roundRect(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+function regionLum(ctx,x,y,w,h){ x=Math.max(0,Math.round(x)); y=Math.max(0,Math.round(y)); w=Math.max(1,Math.round(w)); h=Math.max(1,Math.round(h)); const d=ctx.getImageData(x,y,w,h).data; let s=0,n=0; for(let i=0;i<d.length;i+=16){ const L=v=>{v/=255; return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)}; s+=.2126*L(d[i])+.7152*L(d[i+1])+.0722*L(d[i+2]); n++; } return s/n; }
+
+/* ---------- render ---------- */
+const c=$('#c'), ctx=c.getContext('2d');
+function render(){
+  const f=FORMATS.find(x=>x.id===state.fmt); const W=f.w,H=f.h; c.width=W; c.height=H;
+  const B=state.brand; const tall=H>W; const u=Math.min(W,H)/100; const pad=u*6;
+  $('#stageTitle').textContent=f.name; $('#stageDims').textContent=`${W} × ${H}`; $('#sampleTag').hidden=!!img;
+
+  let ix=0,iy=0,iw=W,ih=H,panel=null; const L=state.layout; const OV= L==='panel'?'none':state.overlay;
+  if(L==='panel'){ if(tall){ panel={x:0,y:H*.55,w:W,h:H*.45}; ih=H*.55; } else { panel={x:0,y:0,w:W*.46,h:H}; ix=W*.46; iw=W*.54; } }
+  ctx.fillStyle='#222'; ctx.fillRect(0,0,W,H);
+  if(img) drawCover(ctx,img,ix,iy,iw,ih,state.fx/100,state.fy/100); else { ctx.save(); ctx.beginPath(); ctx.rect(ix,iy,iw,ih); ctx.clip(); drawSample(ctx,W,H); ctx.restore(); }
+  if(panel){ ctx.fillStyle=B.primary; ctx.fillRect(panel.x,panel.y,panel.w,panel.h); }
+
+  // text geometry
+  const cf=currentFont(); const align= L==='center'?'center':'left';
+  let textColor='#FFFFFF', hiColor=B.accent, textX=pad, textW= tall? W-pad*2 : W*.68, maxLines= tall?4:3;
+  if(L==='center'){ textW=W*.8; textX=(W-textW)/2; }
+  if(L==='panel'){ textColor=contrastOn(B.primary); textX=panel.x+pad; textW=panel.w-pad*2; maxLines= tall?4:5; if(cr(hexLum(B.accent),hexLum(B.primary))<2) hiColor=textColor; }
+  if(OV==='plate'){ textColor=contrastOn(B.primary); }
+  const paras=parseHeadline(state.headline.trim()||' ');
+  const start= tall? u*9 : u*11, min=u*4;
+  const fit=fitHeadline(ctx,paras,cf.family,cf.weight,textW,maxLines,start,min);
+  const lh=fit.size*1.12, blockH=fit.lines.length*lh; const authorSize=u*3.2, kickSize=u*2.8, gap=u*2.2;
+  const hasAuthor=!!state.author.trim(), hasKick=!!state.kicker.trim(); const logoH=u*7;
+  const total= (hasKick? kickSize*1.9+gap:0) + blockH + (hasAuthor? gap+authorSize:0);
+  let top;
+  if(L==='top'){ top= pad + (logoImg||B.name.trim()? logoH+gap*1.5 : 0); if(state.fmt==='story') top+=u*14; }
+  else if(L==='center'){ top=(H-total)/2; }
+  else if(L==='panel'){ top=panel.y+panel.h-pad-total; }
+  else { top=H-pad-total-(state.fmt==='story'?u*14:0); }
+  const kickTop=top, hlTop= top + (hasKick? kickSize*1.9+gap:0), authorY= hlTop+blockH+gap+authorSize*.85;
+
+  // overlay
+  if(OV==='darken'){ const a=state.dark/100; const g= L==='top'? ctx.createLinearGradient(0,0,0,H*.65) : L==='center'? null : ctx.createLinearGradient(0,H*.3,0,H);
+    if(g){ if(L==='top'){ g.addColorStop(0,`rgba(10,12,18,${a})`); g.addColorStop(1,'rgba(10,12,18,0)'); } else { g.addColorStop(0,'rgba(10,12,18,0)'); g.addColorStop(1,`rgba(10,12,18,${a})`); } ctx.fillStyle=g; ctx.fillRect(0,0,W,H); }
+    else { ctx.fillStyle=`rgba(10,12,18,${a*.75})`; ctx.fillRect(0,0,W,H); } }
+
+  // contrast sample before text
+  let ratio;
+  if(OV==='plate'||L==='panel') ratio=cr(hexLum(B.primary),hexLum(textColor)); else ratio=cr(regionLum(ctx,textX,hlTop,textW,blockH),hexLum(textColor));
+
+  // kicker
+  const lineW=l=>{ ctx.font=`${cf.weight} ${fit.size}px "${cf.family}"`; return ctx.measureText(lineText(l)).width; };
+  const startX=l=> align==='center' ? (W-lineW(l))/2 : textX;
+  if(hasKick){ ctx.font=`700 ${kickSize}px "Manrope"`; ctx.letterSpacing=`${kickSize*.06}px`; const t=state.kicker.trim().toUpperCase(); const kw=ctx.measureText(t).width+kickSize*1.6; const kx= align==='center'?(W-kw)/2:textX;
+    let bg=B.accent; if(L==='panel' && cr(hexLum(B.accent),hexLum(B.primary))<1.5) bg=contrastOn(B.primary);
+    ctx.fillStyle=bg; roundRect(ctx,kx,kickTop,kw,kickSize*1.9,kickSize*.4); ctx.fill(); ctx.fillStyle=contrastOn(bg); ctx.textBaseline='middle'; ctx.textAlign='left'; ctx.fillText(t,kx+kickSize*.8,kickTop+kickSize*.98); ctx.letterSpacing='0px'; }
+
+  // headline
+  ctx.textBaseline='alphabetic'; ctx.textAlign='left'; ctx.font=`${cf.weight} ${fit.size}px "${cf.family}"`;
+  const padX=fit.size*.28;
+  fit.lines.forEach((l,i)=>{ const y=hlTop+lh*i; const x0=startX(l); const base=y+lh-fit.size*.22;
+    const spW=ctx.measureText(' ').width; const adv=(l,j)=> ctx.measureText(l[j].w).width + (j<l.length-1 && !l[j+1].glue ? spW : 0);
+    if(OV==='plate'){ let x=x0; l.forEach((t,j)=>{ const a=adv(l,j); ctx.fillStyle= t.hi? B.accent : B.primary; ctx.fillRect(x-(j===0?padX:0), y, a+(j===0?padX:0)+(j===l.length-1?padX:0), lh); x+=a; });
+      x=x0; l.forEach((t,j)=>{ ctx.fillStyle= t.hi? contrastOn(B.accent) : contrastOn(B.primary); ctx.fillText(t.w,x,base); x+=adv(l,j); }); }
+    else { let x=x0; if(L!=='panel'){ ctx.shadowColor='rgba(0,0,0,.45)'; ctx.shadowBlur=fit.size*.25; ctx.shadowOffsetY=fit.size*.05; }
+      l.forEach((t,j)=>{ ctx.fillStyle= t.hi? hiColor : textColor; ctx.fillText(t.w,x,base); x+=adv(l,j); }); ctx.shadowColor='transparent'; ctx.shadowBlur=0; ctx.shadowOffsetY=0; } });
+
+  // author
+  if(hasAuthor){ ctx.font=`600 ${authorSize}px "Manrope"`; ctx.fillStyle= OV==='plate'? '#FFFFFF' : textColor; if(OV==='plate' && L!=='panel'){ ctx.shadowColor='rgba(0,0,0,.5)'; ctx.shadowBlur=authorSize*.4; } ctx.globalAlpha=.9; const t=state.author.trim(); const ax= align==='center'? (W-ctx.measureText(t).width)/2 : textX; ctx.fillText(t,ax,authorY); ctx.globalAlpha=1; ctx.shadowColor='transparent'; ctx.shadowBlur=0; }
+
+  // logo / name
+  const logoAtBottom= L==='top'; let lx=pad, ly= logoAtBottom? H-pad-logoH-(state.fmt==='story'?u*14:0) : pad+(state.fmt==='story'&&!logoAtBottom?u*14:0);
+  if(L==='panel'){ lx=panel.x+pad; ly=panel.y+pad; }
+  if(logoImg){ ctx.drawImage(logoImg,lx,ly,logoH*(logoImg.width/logoImg.height),logoH); }
+  else if(B.name.trim()){ ctx.font=`700 ${u*3.4}px "Manrope"`; ctx.textBaseline='top'; ctx.letterSpacing=`${u*.25}px`; const nm=B.name.trim().toUpperCase(); const nw=ctx.measureText(nm).width+u*3;
+    if(L==='panel'){ ctx.fillStyle=contrastOn(B.primary); ctx.fillText(nm,lx,ly+u); } else { ctx.fillStyle='rgba(0,0,0,.35)'; roundRect(ctx,lx,ly,nw,u*3.4+u*2.4,u*.8); ctx.fill(); ctx.fillStyle='#FFFFFF'; ctx.fillText(nm,lx+u*1.5,ly+u*1.2); }
+    ctx.letterSpacing='0px'; ctx.textBaseline='alphabetic'; }
+
+  // safe zones
+  const zones=[]; let safeHit=false;
+  if(state.fmt==='yt') zones.push({x:W*.78,y:H*.84,w:W*.22,h:H*.16,n:'таймкод'});
+  if(state.fmt==='story'){ zones.push({x:0,y:0,w:W,h:H*.13,n:'аватар і прогрес'}); zones.push({x:0,y:H*.84,w:W,h:H*.16,n:'відповідь і кнопки'}); }
+  if(state.fmt==='ig45'){ zones.push({x:0,y:0,w:W,h:(H-W)/2,n:'обрізка в сітці 1:1',soft:true}); zones.push({x:0,y:H-(H-W)/2,w:W,h:(H-W)/2,n:'обрізка в сітці 1:1',soft:true}); }
+  if(state.fmt==='og') zones.push({x:W*.78,y:H*.8,w:W*.22,h:H*.2,n:'превʼю в месенджерах'});
+  const tbW=Math.max(1,...fit.lines.map(lineW)); const tbX= align==='center'?(W-tbW)/2:textX; const tb={x:tbX,y:kickTop,w:tbW,h:total};
+  zones.forEach(z=>{ const hit= tb.x<z.x+z.w && tb.x+tb.w>z.x && tb.y<z.y+z.h && tb.y+tb.h>z.y; if(hit&&!z.soft) safeHit=true;
+    if(state.safe){ ctx.save(); ctx.fillStyle='rgba(255,60,60,.22)'; ctx.fillRect(z.x,z.y,z.w,z.h); ctx.strokeStyle='rgba(255,60,60,.9)'; ctx.setLineDash([u*1.5,u]); ctx.lineWidth=u*.4; ctx.strokeRect(z.x,z.y,z.w,z.h); ctx.fillStyle='#fff'; ctx.font=`700 ${u*2.6}px "Manrope"`; ctx.textBaseline='top'; ctx.textAlign='left'; ctx.fillText(z.n.toUpperCase(),z.x+u*1.5,z.y+u*1.2); ctx.restore(); } });
+
+  // checks
+  const words=paras.flat().length;
+  setRule('words', !state.headline.trim()?'bad': words<=7?'ok': words<=9?'warn':'bad', !state.headline.trim()?'Заголовка немає.':`${words} ${words===1?'слово':words<5?'слова':'слів'}${words>7?' — скоротіть або перенесіть частину в підзаголовок статті.':'.'}`);
+  setRule('contrast', ratio>=4.5?'ok': ratio>=3?'warn':'bad', ratio>=4.5?`Контраст ${ratio.toFixed(1)}:1 — читається.`: ratio>=3?`Контраст ${ratio.toFixed(1)}:1 — на межі. Посильте затемнення або увімкніть плашку.`:`Контраст ${ratio.toFixed(1)}:1 — не читається. Увімкніть плашку або затемнення, або посуньте картинку.`);
+  setRule('logo', (logoImg||B.name.trim())?'ok':'bad', logoImg?'Логотип на місці.': B.name.trim()?'Стоїть назва видання. Завантажте логотип у «Стилі редакції», щоб було впізнаваніше.':'Вкажіть назву видання або логотип у «Стилі редакції».');
+  setRule('safe', zones.length? (safeHit?'bad':'ok') : 'ok', zones.length? (safeHit?'Текст заходить у службову зону — увімкніть «службові зони» над макетом і змініть розкладку.':'Текст поза службовими зонами цього формату.') : 'У цього формату немає службових зон.');
+
+  $('#fmtSt').textContent=f.name; $('#brandSt').textContent=B.name.trim()||'не заданий'; $('#imgSt').textContent= img?'своя картинка':'приклад'; $('#txtSt').textContent=LAYOUTS.find(l=>l.id===L).name+(L!=='panel'?' · '+OVERLAYS.find(o=>o.id===state.overlay).name.toLowerCase():'');
+}
+
+/* ---------- files ---------- */
+function loadImage(src){ return new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=src; }); }
+function readFile(file){ return new Promise(r=>{ const fr=new FileReader(); fr.onload=()=>r(fr.result); fr.readAsDataURL(file); }); }
+async function setImageFile(file){ if(!file||!file.type.startsWith('image/')) return; const src=await readFile(file); img=await loadImage(src); state.imgSrc=src; state.fx=50; state.fy=50; toast('Картинку вставлено — посуньте її мишкою, якщо треба'); render(); }
+async function setLogoFile(file){ if(!file) return; const src=await readFile(file); logoImg=await loadImage(src); state.brand.logo=src; $('#logoPrev').src=src; $('#logoPrev').hidden=false; $('#logoNone').hidden=true; buildLogoColors(extractColors(logoImg)); saveKit(); render(); }
+async function setFontFile(file){ if(!file) return; const data=await readFile(file); state.brand.customFont={name:file.name.replace(/\.[^.]+$/,''), data}; state.brand.font='__custom'; await loadCustomFont(); buildFontSelect(); saveKit(); await ensureFonts(); render(); toast('Шрифт додано'); }
+
+/* ---------- references & sheets ---------- */
+function buildRefs(sel,key,max,numbered){
+  const box=$(sel); box.innerHTML='';
+  state[key].forEach((src,i)=>{ const d=document.createElement('div'); d.className='r'; d.innerHTML=`<img src="${src}" alt="">${numbered?`<i>${i+1}</i>`:''}<button type="button" aria-label="Прибрати">×</button>`; d.querySelector('button').onclick=()=>{ state[key].splice(i,1); buildRefs(sel,key,max,numbered); updatePrompt(); }; box.appendChild(d); });
+  if(state[key].length<max){ const a=document.createElement('button'); a.type='button'; a.className='add'; a.textContent='+'; a.title='Додати'; const inp=document.createElement('input'); inp.type='file'; inp.accept='image/*'; inp.multiple=true; inp.hidden=true;
+    a.onclick=()=>inp.click(); inp.onchange=async e=>{ for(const f of [...e.target.files].slice(0,max-state[key].length)){ if(f.type.startsWith('image/')) state[key].push(await readFile(f)); } buildRefs(sel,key,max,numbered); updatePrompt(); }; box.appendChild(a); box.appendChild(inp); }
+}
+async function makeSheet(srcs,numbered){
+  const ims=await Promise.all(srcs.map(loadImage)); const cell=768,pad=24,cols=Math.min(ims.length,2),rows=Math.ceil(ims.length/cols);
+  const cv=document.createElement('canvas'); cv.width=cols*cell+(cols+1)*pad; cv.height=rows*cell+(rows+1)*pad; const x=cv.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,cv.width,cv.height);
+  ims.forEach((im,i)=>{ const cx=pad+(i%cols)*(cell+pad), cy=pad+Math.floor(i/cols)*(cell+pad); const s=Math.min(cell/im.width,cell/im.height); const w=im.width*s,h=im.height*s; x.drawImage(im,cx+(cell-w)/2,cy+(cell-h)/2,w,h);
+    if(numbered){ x.fillStyle='#FFD23F'; x.fillRect(cx,cy,110,110); x.fillStyle='#17191F'; x.font='700 72px "Unbounded", sans-serif'; x.textAlign='center'; x.textBaseline='middle'; x.fillText(String(i+1),cx+55,cy+58); } });
+  return cv;
+}
+async function copySheet(key,numbered,label){
+  if(!state[key].length){ toast('Спочатку додайте зображення'); return; }
+  const cv=await makeSheet(state[key],numbered);
+  try{ const blob=await new Promise(r=>cv.toBlob(r,'image/png')); await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]); toast(`${label} у буфері — вставте в ChatGPT разом із промптом`); }
+  catch(e){ modal(`<h3>${label}</h3><p>Буфер недоступний. Правий клік → «Зберегти зображення» і прикріпіть файл у ChatGPT.</p><img src="${cv.toDataURL('image/png')}" alt="${label}"><div class="actions"><button class="btn primary" data-close>Готово</button></div>`); }
+}
+
+/* ---------- misc ---------- */
+let tt; function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('show'),2200); }
+async function copyText(s){ try{ await navigator.clipboard.writeText(s); }catch(e){ const ta=document.createElement('textarea'); ta.value=s; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');}catch(_){} ta.remove(); } }
+function modal(html){ const m=document.createElement('div'); m.className='modal'; m.innerHTML=`<div class="card">${html}</div>`; m.addEventListener('click',e=>{ if(e.target===m) m.remove(); }); document.body.appendChild(m); m.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>m.remove()); return m; }
+const sandboxed=()=>/claude\.ai$|claudeusercontent/.test(location.hostname);
+async function copyCanvas(){ try{ const blob=await new Promise(r=>c.toBlob(r,'image/png')); await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]); toast('Картинка в буфері обміну'); }catch(e){ toast('Буфер недоступний — збережіть через «Завантажити PNG»'); } }
+function exportPng(){ state.safe=false; $('#safeToggle').checked=false; render(); const f=FORMATS.find(x=>x.id===state.fmt); const url=c.toDataURL('image/png');
+  if(!sandboxed()){ const a=document.createElement('a'); a.href=url; a.download=`obkladynka-${f.id}-${f.w}x${f.h}.png`; document.body.appendChild(a); a.click(); a.remove(); toast('Завантажується PNG'); return; }
+  modal(`<h3>${f.name} · ${f.w}×${f.h}</h3><p>Правий клік (або довге натискання) → «Зберегти зображення», або скопіюйте в буфер.</p><img src="${url}" alt="Обкладинка ${f.name}"><div class="actions"><button class="btn" id="cpImg">Скопіювати в буфер</button><button class="btn primary" data-close>Готово</button></div>`).querySelector('#cpImg').onclick=copyCanvas; }
+
+/* ---------- drag image on canvas ---------- */
+function bindDrag(){ let d=null; c.addEventListener('pointerdown',e=>{ d={x:e.clientX,y:e.clientY,fx:state.fx,fy:state.fy}; c.setPointerCapture(e.pointerId); c.classList.add('drag'); });
+  c.addEventListener('pointermove',e=>{ if(!d) return; const r=c.getBoundingClientRect(); state.fx=Math.max(0,Math.min(100,d.fx-(e.clientX-d.x)/r.width*160)); state.fy=Math.max(0,Math.min(100,d.fy-(e.clientY-d.y)/r.height*160)); render(); });
+  const up=()=>{ d=null; c.classList.remove('drag'); }; c.addEventListener('pointerup',up); c.addEventListener('pointercancel',up); }
+
+/* ---------- init ---------- */
+function bindBrand(){ const B=state.brand; $('#brandName').value=B.name; syncColorInputs(); buildFontSelect(); buildPairs();
+  if(B.logo){ loadImage(B.logo).then(i=>{ logoImg=i; $('#logoPrev').src=B.logo; $('#logoPrev').hidden=false; $('#logoNone').hidden=true; buildLogoColors(extractColors(i)); render(); }).catch(()=>{}); } }
+async function init(){
+  loadKit(); buildFormats(); buildKinds(); buildChips('#genreChips',GENRES,'genre'); buildChips('#moodChips',MOODS,'mood'); buildChips('#collageChips',COLLAGE,'collageStyle'); buildChips('#styleChips',STYLES,'illuStyle'); buildLayouts(); buildOverlays(); buildRules(); buildPresets(); bindBrand();
+  buildRefs('#collageRefs','collagePhotos',4,true); buildRefs('#styleRefs','styleRefs',3,false);
+  $('#topic').value=state.topic; $('#kicker').value=state.kicker; $('#headline').value=state.headline; $('#author').value=state.author; $('#heroEl').value=state.heroEl; $('#sideEls').value=state.sideEls; $('#dark').value=state.dark;
+  updatePrompt();
+  $('#topic').oninput=e=>{state.topic=e.target.value; updatePrompt();};
+  $('#heroEl').oninput=e=>{state.heroEl=e.target.value; updatePrompt();};
+  $('#sideEls').oninput=e=>{state.sideEls=e.target.value; updatePrompt();};
+  $('#kicker').oninput=e=>{state.kicker=e.target.value; render();};
+  $('#headline').oninput=e=>{state.headline=e.target.value; render();};
+  $('#author').oninput=e=>{state.author=e.target.value; render();};
+  $('#dark').oninput=e=>{state.dark=+e.target.value; render();};
+  $('#safeToggle').onchange=e=>{state.safe=e.target.checked; render();};
+  $('#brandName').oninput=e=>{state.brand.name=e.target.value; saveKit(); render();};
+  const syncCol=(picker,text,key)=>{ $(picker).oninput=e=>{state.brand[key]=e.target.value.toUpperCase(); $(text).value=state.brand[key]; saveKit(); buildPairs(); render();}; $(text).oninput=e=>{ if(/^#[0-9a-f]{6}$/i.test(e.target.value)){ state.brand[key]=e.target.value.toUpperCase(); $(picker).value=e.target.value; saveKit(); buildPairs(); render(); } }; };
+  syncCol('#colPrimary','#colPrimaryT','primary'); syncCol('#colAccent','#colAccentT','accent');
+  $('#fontSel').onchange=async e=>{ state.brand.font=e.target.value; saveKit(); await ensureFonts(); render(); };
+  $('#fontPick').onclick=()=>$('#fontFile').click(); $('#fontFile').onchange=e=>setFontFile(e.target.files[0]);
+  $('#logoPick').onclick=()=>$('#logoFile').click(); $('#logoFile').onchange=e=>setLogoFile(e.target.files[0]);
+  $('#imgFile').onchange=e=>setImageFile(e.target.files[0]);
+  $('#langEn').onclick=()=>{state.lang='en'; $('#langEn').setAttribute('aria-pressed',true); $('#langRu').setAttribute('aria-pressed',false); updatePrompt();};
+  $('#langRu').onclick=()=>{state.lang='ru'; $('#langEn').setAttribute('aria-pressed',false); $('#langRu').setAttribute('aria-pressed',true); updatePrompt();};
+  $('#copyPrompt').onclick=async()=>{ await copyText(buildPrompt()); toast('Промпт скопійовано — вставте у ChatGPT'); };
+  $('#copyCollageSheet').onclick=()=>copySheet('collagePhotos',true,'Аркуш фото');
+  $('#copyStyleSheet').onclick=()=>copySheet('styleRefs',false,'Аркуш референсів');
+  $('#exportBtn').onclick=exportPng; $('#copyImg').onclick=()=>{ state.safe=false; $('#safeToggle').checked=false; render(); copyCanvas(); };
+
+  document.addEventListener('paste',e=>{ if(e.target && /^(INPUT|TEXTAREA)$/.test(e.target.tagName)) return; const it=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith('image/')); if(it){ e.preventDefault(); setImageFile(it.getAsFile()); } });
+  const dz=$('#drop'); ['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault(); dz.classList.add('over');})); ['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault(); dz.classList.remove('over');})); dz.addEventListener('drop',e=>setImageFile(e.dataTransfer.files[0]));
+  const cw=$('#cw'); ['dragenter','dragover'].forEach(ev=>cw.addEventListener(ev,e=>e.preventDefault())); cw.addEventListener('drop',e=>{e.preventDefault(); setImageFile(e.dataTransfer.files[0]);});
+  bindDrag();
+  try{ window.claude?.hot?.snapshot?.(()=>({...state, imgSrc:null, collagePhotos:[], styleRefs:[], brand:{...state.brand, logo:null, customFont:null}})); }catch(e){}
+  render();
+  await loadCustomFont(); await ensureFonts(); render();
+}
+const start=(d)=>{ if(d && d.headline){ const {brand,imgSrc,collagePhotos,styleRefs,...rest}=d; Object.assign(state,rest); } init(); };
+window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
+})();
+</script>
+
+</body>
+</html>
