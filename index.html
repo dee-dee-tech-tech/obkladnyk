@@ -36,6 +36,19 @@ label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bot
 .brand i{display:inline-block;width:26px;height:18px;background:var(--hi);border-radius:2px;transform:skewX(-8deg)}
 .top .spacer{flex:1}
 .tagline{margin:0;color:var(--muted);font-size:13px}
+#openStyle .dot{width:10px;height:10px;border-radius:50%;background:var(--hi);display:inline-block}
+#openStyle small{color:var(--muted);font-weight:500;margin-left:2px}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px;border-bottom:1px solid var(--line)}
+.tabs button{border:0;background:none;padding:8px 12px;font-weight:700;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;display:flex;align-items:center;gap:6px}
+.tabs button span.d{font-size:11px;font-weight:500;font-variant-numeric:tabular-nums}
+.tabs button[aria-selected="true"]{color:var(--hi);border-bottom-color:var(--hi)}
+.tabs button:hover{color:var(--ink)}
+.drawer-bg{position:fixed;inset:0;background:rgba(5,7,10,.6);z-index:40}
+.drawer{position:fixed;top:0;left:0;bottom:0;width:min(400px,100%);background:var(--panel);border-right:1px solid var(--line);box-shadow:var(--shadow);z-index:41;padding:18px 18px calc(24px + env(safe-area-inset-bottom,0px));padding-top:calc(18px + env(safe-area-inset-top,0px));overflow:auto}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.drawer h2{font:700 16px "Unbounded",sans-serif;color:var(--hi)}
+.lc{display:flex;align-items:center;gap:8px;margin-top:6px}
+.lc>span{font-size:12px;color:var(--muted);width:64px;flex:0 0 auto}
 .about{background:linear-gradient(135deg,rgba(255,210,63,.10),rgba(107,147,255,.06) 60%,transparent),var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:16px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
 .about .mark{width:60px;height:60px;border-radius:16px;background:var(--hi);display:grid;place-items:center;font:700 24px "Unbounded",sans-serif;color:#17191F;transform:rotate(-5deg);box-shadow:0 10px 24px rgba(255,210,63,.25)}
 .about p{margin:0;font-size:16px;line-height:1.55;max-width:70ch}
@@ -52,7 +65,7 @@ label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bot
 .btn.sm{padding:5px 9px;font-size:12px;border-radius:6px}
 
 /* workspace */
-.ws{display:grid;grid-template-columns:360px minmax(0,1fr);gap:16px;align-items:start}
+.ws{display:grid;grid-template-columns:380px minmax(0,1fr);gap:16px;align-items:start}
 @media (min-width:761px){.stage{position:sticky;top:12px}}
 @media (max-width:760px){.ws{grid-template-columns:1fr}}
 
@@ -176,8 +189,9 @@ details.gen .gbody{padding:4px 12px 12px}
 
 <header class="top">
   <div class="brand"><i></i>Обкладник</div>
-  <div class="spacer"></div>
   <p class="tagline">Обкладинки для статей, YouTube, Instagram і Stories</p>
+  <div class="spacer"></div>
+  <button class="btn" id="openStyle"><span class="dot" id="styleDot"></span>Стиль редакції<small id="styleName"></small></button>
 </header>
 
 <section class="about">
@@ -193,45 +207,21 @@ details.gen .gbody{padding:4px 12px 12px}
   <aside class="side">
 
     <details class="step" open>
-      <summary><span class="n">1</span>Формат<span class="st" id="fmtSt"></span></summary>
+      <summary><span class="n">1</span>Текст<span class="st" id="txtSt"></span></summary>
       <div class="body">
-        <div class="fmt" id="fmtList"></div>
-        <p class="hint">Один макет — усі формати. Перемикайте й експортуйте кожен.</p>
+        <div class="field"><label for="headline">Заголовок</label><textarea id="headline" style="min-height:64px" placeholder="Заголовок обкладинки"></textarea>
+          <p class="hint">Одна думка, до 7 слів. Слово в <code>*зірочках*</code> стане кольору акценту. Enter — перенос рядка там, де хочете ви.</p></div>
+        <div class="row">
+          <div class="field"><label for="kicker">Рубрика</label><input id="kicker" placeholder="Економіка"></div>
+          <div class="field"><label for="author">Автор / підпис</label><input id="author" placeholder="Необовʼязково"></div>
+        </div>
       </div>
     </details>
 
-    <details class="step">
-      <summary><span class="n">2</span>Стиль редакції<span class="st" id="brandSt"></span></summary>
+    <details class="step" open>
+      <summary><span class="n">2</span>Картинка<span class="st" id="imgSt"></span></summary>
       <div class="body">
-        <div class="field"><label for="brandName">Назва видання</label><input id="brandName" placeholder="Наприклад: Міські новини"></div>
-        <div class="field"><label>Логотип (PNG із прозорістю)</label>
-          <div class="logo-drop"><img id="logoPrev" alt="" hidden><span id="logoNone" class="hint" style="margin:0">Немає логотипа — стоятиме назва</span><span style="flex:1"></span><button class="btn sm" id="logoPick">Завантажити</button><input type="file" id="logoFile" accept="image/*" hidden></div>
-        </div>
-        <div class="field" id="logoColorsField" hidden><label>Кольори з вашого логотипа — натисніть, щоб зробити основним</label><div class="pairs" id="logoColors"></div><p class="hint">Другий клік по тому ж кольору робить його акцентом.</p></div>
-        <div class="field"><label>Або готова пара «основний + акцент»</label><div class="pairs" id="pairs"></div></div>
-        <div class="field">
-          <div class="colrow">
-            <div><label for="colPrimary">Основний</label><div class="c"><input type="color" id="colPrimary" value="#0E1F5B"><input type="text" id="colPrimaryT" value="#0E1F5B" maxlength="7" aria-label="Код основного кольору"></div></div>
-            <div><label for="colAccent">Акцент</label><div class="c"><input type="color" id="colAccent" value="#FFD23F"><input type="text" id="colAccentT" value="#FFD23F" maxlength="7" aria-label="Код акцентного кольору"></div></div>
-          </div>
-          <p class="hint">Основний — для панелей і плашок, акцент — для рубрики й виділених слів. Код кольору потрібен лише якщо він у вас є.</p>
-        </div>
-        <div class="field"><label for="fontSel">Шрифт заголовка</label>
-          <div class="fontrow">
-            <select id="fontSel"></select>
-            <button class="btn sm" id="fontPick" title="Завантажити свій шрифт (.ttf, .otf, .woff)">Свій шрифт</button>
-            <input type="file" id="fontFile" accept=".ttf,.otf,.woff,.woff2,font/*">
-          </div>
-          <p class="hint">Є фірмовий шрифт редакції? Завантажте файл — він зʼявиться у списку.</p>
-        </div>
-        <p class="hint">Стиль запамʼятовується у цьому браузері — наступного разу все вже буде на місці.</p>
-      </div>
-    </details>
-
-    <details class="step">
-      <summary><span class="n">3</span>Картинка<span class="st" id="imgSt"></span></summary>
-      <div class="body">
-        <div class="drop" id="drop" style="margin-top:0"><b>Вставте свою картинку</b> (Ctrl/⌘+V), перетягніть сюди або <label for="imgFile" style="display:inline;color:var(--accent);cursor:pointer;font-weight:700">оберіть файл</label><input type="file" id="imgFile" accept="image/*"><div class="hint" style="margin-top:4px">Далі її можна посунути мишкою прямо на макеті.</div></div>
+        <div class="drop" id="drop" style="margin-top:0"><b>Вставте свою картинку</b> (Ctrl+V), перетягніть сюди або <label for="imgFile" style="display:inline;color:var(--accent);cursor:pointer;font-weight:700">оберіть файл</label><input type="file" id="imgFile" accept="image/*"><div class="hint" style="margin-top:4px">Далі її можна посунути мишкою прямо на макеті.</div></div>
 
         <details class="gen" id="gen">
           <summary>Немає картинки? Створіть її в ChatGPT<small>промпт готуємо ми</small></summary>
@@ -240,7 +230,6 @@ details.gen .gbody{padding:4px 12px 12px}
             <div class="field"><label>Що створюємо</label><div class="kinds" id="kinds"></div></div>
             <div class="field"><label for="topic">Про що матеріал</label><input id="topic" placeholder="Наприклад: тарифи на електроенергію зростуть із жовтня"></div>
             <div class="field"><label>Жанр</label><div class="chips" id="genreChips"></div></div>
-            <div class="field"><label>Настрій</label><div class="chips" id="moodChips"></div></div>
 
             <div class="sub" id="subCollage" hidden>
               <div class="field"><label for="heroEl">Головний елемент — фокус колажу</label><input id="heroEl" placeholder="Наприклад: лічильник електроенергії крупним планом"></div>
@@ -272,20 +261,16 @@ details.gen .gbody{padding:4px 12px 12px}
             <div class="steps3">
               <div><b>1</b>Скопіюйте промпт</div>
               <div><b>2</b>Згенеруйте у своєму ChatGPT</div>
-              <div><b>3</b>Вставте картинку вище — Ctrl/⌘+V</div>
+              <div><b>3</b>Вставте картинку вище — Ctrl+V</div>
             </div>
           </div>
         </details>
       </div>
     </details>
 
-    <details class="step">
-      <summary><span class="n">4</span>Текст і розкладка<span class="st" id="txtSt"></span></summary>
+    <details class="step" open>
+      <summary><span class="n">3</span>Розкладка<span class="st" id="laySt"></span></summary>
       <div class="body">
-        <div class="field"><label for="kicker">Рубрика</label><input id="kicker" placeholder="Економіка"></div>
-        <div class="field"><label for="headline">Заголовок</label><textarea id="headline" style="min-height:64px" placeholder="Заголовок обкладинки"></textarea>
-          <p class="hint">Одна думка, до 7 слів. Слово в <code>*зірочках*</code> стане кольору акценту. Enter — перенос рядка там, де хочете ви.</p></div>
-        <div class="field"><label for="author">Автор / підпис</label><input id="author" placeholder="Імʼя автора або порожньо"></div>
         <div class="field"><label>Де стоїть текст</label><div class="layouts" id="layouts"></div></div>
         <div class="field" id="overlayField"><label>Підкладка під текстом</label><div class="overlays" id="overlays"></div>
           <div id="darkRow" style="margin-top:8px"><label for="dark">Сила затемнення</label><input type="range" id="dark" min="20" max="100" value="70"></div>
@@ -295,10 +280,11 @@ details.gen .gbody{padding:4px 12px 12px}
   </aside>
 
   <section class="stage">
+    <div class="tabs" id="fmtList" role="tablist"></div>
     <div class="stage-head">
-      <h2 id="stageTitle">YouTube</h2><span class="dims" id="stageDims">1280 × 720</span>
+      <span class="dims" id="stageDims">1280 × 720</span>
       <div class="tools">
-        <label class="toggle"><input type="checkbox" id="safeToggle"> службові зони</label>
+        <label class="toggle"><input type="checkbox" id="safeToggle"> показати, що перекриє соцмережа</label>
       </div>
     </div>
     <div class="canvas-wrap" id="cw">
@@ -307,12 +293,44 @@ details.gen .gbody{padding:4px 12px 12px}
     <div class="stage-foot">
       <button class="btn primary" id="exportBtn">Завантажити PNG</button>
       <button class="btn" id="copyImg">Скопіювати картинку</button>
-      <span class="hint" id="stageHint"><span class="sample" id="sampleTag">приклад</span> — вставте свою картинку у кроці 3. Картинку можна тягнути мишкою.</span>
+      <span class="hint" id="stageHint"></span>
     </div>
     <div class="status" id="ruleList" aria-label="Перевірка"></div>
     <p class="status-msg" id="statusMsg"></p>
   </section>
 </div>
+
+<div class="drawer-bg" id="drawerBg" hidden></div>
+<aside class="drawer" id="drawer" hidden aria-label="Стиль редакції">
+  <div class="drawer-head"><h2>Стиль редакції</h2><button class="btn sm" id="closeStyle">Готово</button></div>
+  <p class="hint" style="margin:0 0 14px">Налаштовується один раз і запамʼятовується у цьому браузері. Зміни одразу видно на макеті праворуч.</p>
+  <div class="field"><label for="brandName">Назва видання</label><input id="brandName" placeholder="Наприклад: Міські новини"></div>
+  <div class="field"><label>Логотип (PNG із прозорістю)</label>
+    <div class="logo-drop"><img id="logoPrev" alt="" hidden><span id="logoNone" class="hint" style="margin:0">Немає логотипа — стоятиме назва</span><span style="flex:1"></span><button class="btn sm" id="logoPick">Завантажити</button><input type="file" id="logoFile" accept="image/*" hidden></div>
+  </div>
+  <div class="field"><label>Розмір логотипа</label><div class="chips" id="logoSizeChips"></div></div>
+  <div class="field" id="logoColorsField" hidden>
+    <label>Кольори з вашого логотипа</label>
+    <div class="lc"><span>Основний:</span><div class="pairs" id="logoColorsP"></div></div>
+    <div class="lc"><span>Акцент:</span><div class="pairs" id="logoColorsA"></div></div>
+  </div>
+  <div class="field"><label>Готова пара «основний + акцент»</label><div class="pairs" id="pairs"></div></div>
+  <div class="field">
+    <div class="colrow">
+      <div><label for="colPrimary">Основний</label><div class="c"><input type="color" id="colPrimary" value="#0E1F5B"><input type="text" id="colPrimaryT" value="#0E1F5B" maxlength="7" aria-label="Код основного кольору"></div></div>
+      <div><label for="colAccent">Акцент</label><div class="c"><input type="color" id="colAccent" value="#FFD23F"><input type="text" id="colAccentT" value="#FFD23F" maxlength="7" aria-label="Код акцентного кольору"></div></div>
+    </div>
+    <p class="hint">Основний — рубрика, панелі та плашки. Акцент — виділені слова. Код кольору потрібен лише якщо він у вас є.</p>
+  </div>
+  <div class="field"><label for="fontSel">Шрифт заголовка</label>
+    <div class="fontrow">
+      <select id="fontSel"></select>
+      <button class="btn sm" id="fontPick" title="Завантажити свій шрифт (.ttf, .otf, .woff)">Свій шрифт</button>
+      <input type="file" id="fontFile" accept=".ttf,.otf,.woff,.woff2,font/*">
+    </div>
+    <p class="hint">Є фірмовий шрифт редакції? Завантажте файл — він зʼявиться у списку.</p>
+  </div>
+</aside>
 
 <div class="toast" id="toast"></div>
 
@@ -322,8 +340,7 @@ const $ = s => document.querySelector(s);
 const FORMATS = [
   {id:'yt',   name:'YouTube',            w:1280,h:720,  ratio:'16:9'},
   {id:'og',   name:'Стаття (OG)',        w:1200,h:630,  ratio:'1.91:1'},
-  {id:'ig45', name:'Instagram 4:5',      w:1080,h:1350, ratio:'4:5'},
-  {id:'ig11', name:'Instagram квадрат',  w:1080,h:1080, ratio:'1:1'},
+  {id:'ig45', name:'Instagram',          w:1080,h:1350, ratio:'4:5'},
   {id:'story',name:'Stories / Reels',    w:1080,h:1920, ratio:'9:16'},
 ];
 const FONTS = [
@@ -340,12 +357,6 @@ const GENRES = [
   {id:'invest', name:'Розслідування', t:'serious, dark, something hidden being revealed', tu:'серйозно, темно, приховане виходить назовні', en:'moody investigative still life, documents, hard side light, deep shadows, cold palette, cinematic', ru:'похмурий натюрморт для розслідування, документи, жорстке бокове світло, глибокі тіні, холодна палітра'},
   {id:'explain', name:'Експлейнер', t:'clear, didactic, one idea explained simply', tu:'зрозуміло, дидактично, одна ідея просто', en:'clean conceptual photograph, one clear metaphor, simple objects, lots of empty background', ru:'чиста концептуальна фотографія, одна зрозуміла метафора, прості предмети, багато порожнього фону'},
   {id:'column', name:'Колонка', t:'reflective, symbolic, quiet', tu:'рефлексивно, символічно, тихо', en:'minimalist symbolic photograph, single object on plain background, soft light, quiet mood', ru:'мінімалістична символічна фотографія, один предмет на простому фоні, мʼяке світло'},
-];
-const MOODS = [
-  {id:'neutral', name:'Нейтрально', en:'neutral, restrained', ru:'нейтрально, стримано'},
-  {id:'alarm', name:'Тривожно', en:'tense, alarming, high contrast', ru:'тривожно, напружено, високий контраст'},
-  {id:'warm', name:'Тепло', en:'warm, hopeful, golden hour', ru:'тепло, з надією, золота година'},
-  {id:'ironic', name:'Іронічно', en:'playful, slightly ironic, bright colors', ru:'грайливо, з іронією, яскраві кольори'},
 ];
 const KINDS = [{id:'photo', name:'Фото'},{id:'collage', name:'Колаж'},{id:'illu', name:'Ілюстрація'}];
 const COLLAGE = [
@@ -365,17 +376,17 @@ const STYLES = [
 const LAYOUTS = [{id:'bottom',name:'Знизу'},{id:'top',name:'Зверху'},{id:'center',name:'По центру'},{id:'panel',name:'Панель бренду'}];
 const OVERLAYS = [{id:'none',name:'Немає'},{id:'darken',name:'Затемнення'},{id:'plate',name:'Плашка'}];
 const PRESETS = [
-  {name:'Новина', kicker:'Економіка', headline:'*Світло* подорожчає: що зміниться у платіжках', author:'', layout:'bottom', overlay:'darken', dark:70, kind:'photo', genre:'news', mood:'alarm', topic:'Тарифи на електроенергію зростуть із жовтня', sample:'city', fx:60, fy:40},
-  {name:'Інтервʼю', kicker:'Інтервʼю', headline:'«До зими не готові, але *будемо*»', author:'Розмовляла Дарʼя Сенчихіна', layout:'panel', overlay:'none', dark:70, kind:'photo', genre:'interview', mood:'neutral', topic:'Розмова з головою ОСББ про підготовку будинку до зими', sample:'portrait', fx:50, fy:30},
-  {name:'Експлейнер', kicker:'Пояснюємо', headline:'Як читати нову *платіжку*\nза дві хвилини', author:'', layout:'top', overlay:'plate', dark:70, kind:'illu', genre:'explain', mood:'warm', topic:'Як влаштована нова платіжка за комунальні послуги', sample:'flat', fx:50, fy:50},
+  {name:'Новина', kicker:'Економіка', headline:'*Світло* подорожчає: що зміниться у платіжках', author:'', layout:'bottom', overlay:'darken', dark:70, kind:'photo', genre:'news', topic:'Тарифи на електроенергію зростуть із жовтня', sample:'city', fx:60, fy:40},
+  {name:'Інтервʼю', kicker:'Інтервʼю', headline:'«До зими не готові, але *будемо*»', author:'Розмовляла Дарʼя Сенчихіна', layout:'panel', overlay:'none', dark:70, kind:'photo', genre:'interview', topic:'Розмова з головою ОСББ про підготовку будинку до зими', sample:'portrait', fx:50, fy:30},
+  {name:'Експлейнер', kicker:'Пояснюємо', headline:'Як читати нову *платіжку*\nза дві хвилини', author:'', layout:'top', overlay:'plate', dark:70, kind:'illu', genre:'explain', topic:'Як влаштована нова платіжка за комунальні послуги', sample:'flat', fx:50, fy:50},
 ];
 
 const state = {
-  fmt:'yt', genre:'news', mood:'alarm', lang:'en', layout:'bottom', overlay:'darken', dark:70,
+  fmt:'yt', genre:'news', lang:'en', layout:'bottom', overlay:'darken', dark:70,
   kind:'photo', collageStyle:'cutout', illuStyle:'flat', heroEl:'', sideEls:'', collagePhotos:[], styleRefs:[],
   topic:'Тарифи на електроенергію зростуть із жовтня', kicker:'Економіка', headline:'*Світло* подорожчає: що зміниться у платіжках', author:'',
-  fx:60, fy:40, safe:false, sample:'city',
-  brand:{name:'Міські новини', logo:null, primary:'#0E1F5B', accent:'#FFD23F', font:'Unbounded', customFont:null},
+  fx:60, fy:40, safe:false, safeDismissed:false, sample:'city',
+  brand:{name:'Міські новини', logo:null, primary:'#0E1F5B', accent:'#FFD23F', font:'Unbounded', customFont:null, logoSize:'m'},
   imgSrc:null,
 };
 let img=null, logoImg=null, customFontLoaded=null;
@@ -397,7 +408,7 @@ function currentFont(){ if(state.brand.font==='__custom' && state.brand.customFo
 async function ensureFonts(){ const cf=currentFont(); try{ await Promise.all([document.fonts.load(`${cf.weight} 40px "${cf.family}"`), document.fonts.load('700 40px "Manrope"'), document.fonts.load('600 40px "Manrope"'), document.fonts.load('700 40px "Unbounded"')]); }catch(e){} }
 
 /* ---------- UI build ---------- */
-function buildFormats(){ const box=$('#fmtList'); box.innerHTML=''; FORMATS.forEach(f=>{ const b=document.createElement('button'); b.type='button'; b.setAttribute('aria-pressed',state.fmt===f.id); const s=36/Math.max(f.w,f.h); b.innerHTML=`<span class="box" style="width:${Math.round(f.w*s)}px;height:${Math.round(f.h*s)}px"></span>${f.name}<span class="d">${f.w}×${f.h}</span>`; b.onclick=()=>{state.fmt=f.id; buildFormats(); render();}; box.appendChild(b); }); }
+function buildFormats(){ const box=$('#fmtList'); box.innerHTML=''; FORMATS.forEach(f=>{ const b=document.createElement('button'); b.type='button'; b.setAttribute('role','tab'); b.setAttribute('aria-selected',state.fmt===f.id); b.innerHTML=`${f.name}<span class="d">${f.ratio}</span>`; b.onclick=()=>{state.fmt=f.id; buildFormats(); render();}; box.appendChild(b); }); }
 function buildChips(sel,list,key){ const box=$(sel); box.innerHTML=''; list.forEach(g=>{ const c=document.createElement('button'); c.type='button'; c.className='chip'; c.textContent=g.name; c.setAttribute('aria-pressed',state[key]===g.id); c.onclick=()=>{state[key]=g.id; buildChips(sel,list,key); updatePrompt();}; box.appendChild(c); }); }
 function buildKinds(){ const box=$('#kinds'); box.innerHTML=''; KINDS.forEach(k=>{ const b=document.createElement('button'); b.type='button'; b.textContent=k.name; b.setAttribute('aria-pressed',state.kind===k.id); b.onclick=()=>{state.kind=k.id; buildKinds(); updatePrompt();}; box.appendChild(b); }); $('#subCollage').hidden=state.kind!=='collage'; $('#subIllu').hidden=state.kind!=='illu'; }
 const ICON={
@@ -419,14 +430,18 @@ function buildRules(){ const R=[
   ]; const box=$('#ruleList'); box.innerHTML=''; R.forEach(r=>{ const d=document.createElement('span'); d.className='pill'; d.id='rule-'+r.id; d.dataset.s='none'; d.title=r.d; d.innerHTML=`<i></i>${r.t}`; box.appendChild(d); }); }
 const ruleMsgs={};
 function setRule(id,s,txt){ const el=$('#rule-'+id); if(!el) return; el.dataset.s=s; ruleMsgs[id]= s==='ok'? '' : txt; $('#statusMsg').textContent=Object.values(ruleMsgs).filter(Boolean).join(' '); }
-function buildPairs(){ const box=$('#pairs'); box.innerHTML=''; PAIRS.forEach(([p,a])=>{ const b=document.createElement('button'); b.type='button'; b.className='pair'; b.title=`${p} + ${a}`; b.setAttribute('aria-pressed', state.brand.primary.toUpperCase()===p && state.brand.accent.toUpperCase()===a); b.innerHTML=`<span style="background:${p}"></span><span style="background:${a}"></span>`; b.onclick=()=>{ state.brand.primary=p; state.brand.accent=a; syncColorInputs(); saveKit(); buildPairs(); render(); }; box.appendChild(b); }); }
-function buildLogoColors(cols){ const f=$('#logoColorsField'), box=$('#logoColors'); box.innerHTML=''; if(!cols||!cols.length){ f.hidden=true; return; } f.hidden=false;
-  cols.forEach(hex=>{ const b=document.createElement('button'); b.type='button'; b.className='sw'; b.style.background=hex; b.title=hex; b.setAttribute('aria-pressed', state.brand.primary.toUpperCase()===hex); b.onclick=()=>{ if(state.brand.primary.toUpperCase()===hex){ state.brand.accent=hex; toast('Тепер це акцент'); } else { state.brand.primary=hex; toast('Тепер це основний колір'); } syncColorInputs(); saveKit(); buildLogoColors(cols); buildPairs(); render(); }; box.appendChild(b); }); }
+function buildPairs(){ const box=$('#pairs'); box.innerHTML=''; PAIRS.forEach(([p,a])=>{ const b=document.createElement('button'); b.type='button'; b.className='pair'; b.title=`${p} + ${a}`; b.setAttribute('aria-pressed', state.brand.primary.toUpperCase()===p && state.brand.accent.toUpperCase()===a); b.innerHTML=`<span style="background:${p}"></span><span style="background:${a}"></span>`; b.onclick=()=>{ state.brand.primary=p; state.brand.accent=a; syncColorInputs(); saveKit(); buildPairs(); buildLogoColors(); render(); }; box.appendChild(b); }); }
+let logoCols=[];
+function buildLogoColors(cols){ if(cols) logoCols=cols; cols=logoCols; const f=$('#logoColorsField'); if(!cols||!cols.length){ f.hidden=true; return; } f.hidden=false;
+  [['#logoColorsP','primary'],['#logoColorsA','accent']].forEach(([sel,key])=>{ const box=$(sel); box.innerHTML=''; cols.forEach(hex=>{ const b=document.createElement('button'); b.type='button'; b.className='sw'; b.style.background=hex; b.title=hex; b.setAttribute('aria-pressed', state.brand[key].toUpperCase()===hex); b.onclick=()=>{ state.brand[key]=hex; syncColorInputs(); saveKit(); buildLogoColors(); buildPairs(); render(); }; box.appendChild(b); }); }); }
+const LOGO_SIZES=[{id:'s',name:'Малий'},{id:'m',name:'Середній'},{id:'l',name:'Великий'}];
+function buildLogoSize(){ const box=$('#logoSizeChips'); box.innerHTML=''; LOGO_SIZES.forEach(o=>{ const c=document.createElement('button'); c.type='button'; c.className='chip'; c.textContent=o.name; c.setAttribute('aria-pressed',(state.brand.logoSize||'m')===o.id); c.onclick=()=>{ state.brand.logoSize=o.id; saveKit(); buildLogoSize(); render(); }; box.appendChild(c); }); }
+function openDrawer(o){ $('#drawer').hidden=!o; $('#drawerBg').hidden=!o; if(o) $('#brandName').focus(); }
 function syncColorInputs(){ const B=state.brand; $('#colPrimary').value=B.primary; $('#colPrimaryT').value=B.primary; $('#colAccent').value=B.accent; $('#colAccentT').value=B.accent; }
 function buildPresets(){ const box=$('#presetBtns'); box.innerHTML=''; PRESETS.forEach(p=>{ const b=document.createElement('button'); b.type='button'; b.className='chip'; b.textContent=p.name; b.onclick=()=>applyPreset(p); box.appendChild(b); }); }
-function applyPreset(p){ Object.assign(state,{kicker:p.kicker,headline:p.headline,author:p.author,layout:p.layout,overlay:p.overlay,dark:p.dark,kind:p.kind,genre:p.genre,mood:p.mood,topic:p.topic,sample:p.sample,fx:p.fx,fy:p.fy});
+function applyPreset(p){ Object.assign(state,{kicker:p.kicker,headline:p.headline,author:p.author,layout:p.layout,overlay:p.overlay,dark:p.dark,kind:p.kind,genre:p.genre,topic:p.topic,sample:p.sample,fx:p.fx,fy:p.fy});
   $('#kicker').value=p.kicker; $('#headline').value=p.headline; $('#author').value=p.author; $('#topic').value=p.topic; $('#dark').value=p.dark;
-  buildLayouts(); buildOverlays(); buildKinds(); buildChips('#genreChips',GENRES,'genre'); buildChips('#moodChips',MOODS,'mood'); updatePrompt(); render(); }
+  buildLayouts(); buildOverlays(); buildKinds(); buildChips('#genreChips',GENRES,'genre'); updatePrompt(); render(); window.scrollTo({top:0,behavior:'smooth'}); }
 
 /* ---------- logo colors ---------- */
 function extractColors(im){
@@ -441,7 +456,7 @@ function colorDist(a,b){ const p=h=>[1,3,5].map(i=>parseInt(h.substr(i,2),16)); 
 
 /* ---------- prompt ---------- */
 function buildPrompt(){
-  const f=FORMATS.find(x=>x.id===state.fmt), g=GENRES.find(x=>x.id===state.genre), m=MOODS.find(x=>x.id===state.mood);
+  const f=FORMATS.find(x=>x.id===state.fmt), g=GENRES.find(x=>x.id===state.genre);
   const tall=f.h>f.w;
   const zone= state.layout==='panel' ? (tall?'bottom half':'left half') : state.layout==='top' ? (tall?'upper third':'upper-left third') : state.layout==='center' ? 'centre' : (tall?'lower third':'lower-left third');
   const zoneUa={'bottom half':'нижня половина','left half':'ліва половина','upper third':'верхня третина','upper-left third':'верхня ліва третина','centre':'центральна частина','lower third':'нижня третина','lower-left third':'нижня ліва третина'}[zone];
@@ -453,19 +468,19 @@ function buildPrompt(){
   if(state.kind==='collage'){
     const cs=COLLAGE.find(x=>x.id===state.collageStyle); const hero=state.heroEl.trim(); const sides=state.sideEls.split('\n').map(s=>s.trim()).filter(Boolean).slice(0,3); const n=state.collagePhotos.length;
     if(en){ const src= n ? `Use the attached numbered sheet as source material: photo 1 is the main element, photos ${n>1?`2–${n}`:'2+'} are supporting. Keep people and objects recognizable, do not invent new faces.` : `Elements: main — ${hero||'(main element)'}; supporting — ${sides.length?sides.join('; '):'(2–3 supporting elements)'}.`;
-      return `Create ONE editorial collage for a news cover. Topic: "${topic}".\n${src}\nHierarchy: the main element is large, sharp and in focus, taking about 60% of the frame. Supporting elements are smaller and arranged organically around it — overlapping, varied scale, never a grid and never evenly spaced.\nManner: ${cs.en}. Unify everything with one color grading and one light direction so it reads as a single image. Genre feel: ${g.t}. Mood: ${m.en}.\n${tailEn}`; }
+      return `Create ONE editorial collage for a news cover. Topic: "${topic}".\n${src}\nHierarchy: the main element is large, sharp and in focus, taking about 60% of the frame. Supporting elements are smaller and arranged organically around it — overlapping, varied scale, never a grid and never evenly spaced.\nManner: ${cs.en}. Unify everything with one color grading and one light direction so it reads as a single image. Genre feel: ${g.t}.\n${tailEn}`; }
     const src= n ? `Використай прикріплений пронумерований аркуш як матеріал: фото 1 — головний елемент, фото ${n>1?`2–${n}`:'2+'} — додаткові. Людей і предмети залиш упізнаваними, не вигадуй нових облич.` : `Елементи: головний — ${hero||'(головний елемент)'}; додаткові — ${sides.length?sides.join('; '):'(2–3 додаткові елементи)'}.`;
-    return `Зроби ОДИН редакційний колаж для обкладинки. Тема: «${topic}».\n${src}\nІєрархія: головний елемент великий, різкий, у фокусі, займає близько 60% кадру. Додаткові — менші, скомпоновані органічно навколо нього: перекриваються, різного масштабу, не сіткою й не рівномірно.\nМанера: ${cs.ru}. Обʼєднай усе одним тонуванням і одним напрямком світла, щоб читалося як одна картинка. Жанр: ${g.tu}. Настрій: ${m.ru}.\n${tailUa}`;
+    return `Зроби ОДИН редакційний колаж для обкладинки. Тема: «${topic}».\n${src}\nІєрархія: головний елемент великий, різкий, у фокусі, займає близько 60% кадру. Додаткові — менші, скомпоновані органічно навколо нього: перекриваються, різного масштабу, не сіткою й не рівномірно.\nМанера: ${cs.ru}. Обʼєднай усе одним тонуванням і одним напрямком світла, щоб читалося як одна картинка. Жанр: ${g.tu}.\n${tailUa}`;
   }
   if(state.kind==='illu'){
     const st=STYLES.find(x=>x.id===state.illuStyle); const n=state.styleRefs.length;
     if(en){ const ref= n ? `Match the visual style, palette and mood of the attached reference sheet (${n} image${n>1?'s':''}). Use the references for style and color only — do not copy their subjects or composition.` : '';
-      return `Create an illustration for a news cover. Topic: "${topic}" — express it through one clear visual metaphor.\nStyle: ${st.en}. ${ref}\nGenre feel: ${g.t}. Mood: ${m.en}.\n${tailEn}`; }
+      return `Create an illustration for a news cover. Topic: "${topic}" — express it through one clear visual metaphor.\nStyle: ${st.en}. ${ref}\nGenre feel: ${g.t}.\n${tailEn}`; }
     const ref= n ? `Повтори візуальний стиль, палітру й настрій прикріпленого аркуша референсів (${n} зобр.). Референси — лише для стилю та кольору, не копіюй їхні сюжети чи композицію.` : '';
-    return `Зроби ілюстрацію для обкладинки матеріалу. Тема: «${topic}» — передай її через одну зрозумілу візуальну метафору.\nСтиль: ${st.ru}. ${ref}\nЖанр: ${g.tu}. Настрій: ${m.ru}.\n${tailUa}`;
+    return `Зроби ілюстрацію для обкладинки матеріалу. Тема: «${topic}» — передай її через одну зрозумілу візуальну метафору.\nСтиль: ${st.ru}. ${ref}\nЖанр: ${g.tu}.\n${tailUa}`;
   }
-  if(en) return `Create an image for a news cover. Topic: "${topic}".\nStyle: ${g.en}. Mood: ${m.en}.\n${tailEn}`;
-  return `Зроби картинку для обкладинки матеріалу. Тема: «${topic}».\nСтиль: ${g.ru}. Настрій: ${m.ru}.\n${tailUa}`;
+  if(en) return `Create an image for a news cover. Topic: "${topic}".\nStyle: ${g.en}.\n${tailEn}`;
+  return `Зроби картинку для обкладинки матеріалу. Тема: «${topic}».\nСтиль: ${g.ru}.\n${tailUa}`;
 }
 function updatePrompt(){ $('#promptBox').textContent=buildPrompt(); }
 
@@ -497,7 +512,7 @@ const c=$('#c'), ctx=c.getContext('2d');
 function render(){
   const f=FORMATS.find(x=>x.id===state.fmt); const W=f.w,H=f.h; c.width=W; c.height=H;
   const B=state.brand; const tall=H>W; const u=Math.min(W,H)/100; const pad=u*6;
-  $('#stageTitle').textContent=f.name; $('#stageDims').textContent=`${W} × ${H}`; $('#stageHint').innerHTML= img? 'Картинку можна тягнути мишкою, щоб посунути.' : '<span class="sample">приклад</span> — вставте свою картинку у кроці 3. Картинку можна тягнути мишкою.';
+  $('#stageDims').textContent=`${f.name} · ${W} × ${H}`; $('#stageHint').innerHTML= img? 'Картинку можна тягнути мишкою, щоб посунути.' : '<span class="sample">приклад</span> — вставте свою картинку у кроці 2. Картинку можна тягнути мишкою.';
 
   let ix=0,iy=0,iw=W,ih=H,panel=null; const L=state.layout; const OV= L==='panel'?'none':state.overlay;
   if(L==='panel'){ if(tall){ panel={x:0,y:H*.55,w:W,h:H*.45}; ih=H*.55; } else { panel={x:0,y:0,w:W*.46,h:H}; ix=W*.46; iw=W*.54; } }
@@ -513,7 +528,7 @@ function render(){
   if(OV==='plate'){ textColor=contrastOn(B.primary); }
   const paras=parseHeadline(state.headline.trim()||' ');
   const start= tall? u*9 : u*11, min=u*4;
-  const logoH=u*7, kickH=(state.kicker.trim()? u*2.8*1.9+u*2.2:0), authH=(state.author.trim()? u*2.2+u*3.2:0);
+  const logoH=u*({s:5,m:7,l:10}[state.brand.logoSize||'m']), kickH=(state.kicker.trim()? u*2.8*1.9+u*2.2:0), authH=(state.author.trim()? u*2.2+u*3.2:0);
   const maxH= L==='panel' ? panel.h-pad*2-logoH-u*3-kickH-authH : L==='top' ? H*.55 : H*.6;
   const fit=fitHeadline(ctx,paras,cf.family,cf.weight,textW,maxLines,start,min,maxH);
   const lh=fit.size*1.12, blockH=fit.lines.length*lh; const authorSize=u*3.2, kickSize=u*2.8, gap=u*2.2;
@@ -539,7 +554,7 @@ function render(){
   const lineW=l=>{ ctx.font=`${cf.weight} ${fit.size}px "${cf.family}"`; return ctx.measureText(lineText(l)).width; };
   const startX=l=> align==='center' ? (W-lineW(l))/2 : textX;
   if(hasKick){ ctx.font=`700 ${kickSize}px "Manrope"`; ctx.letterSpacing=`${kickSize*.06}px`; const t=state.kicker.trim().toUpperCase(); const kw=ctx.measureText(t).width+kickSize*1.6; const kx= align==='center'?(W-kw)/2:textX;
-    let bg=B.accent; if(L==='panel' && cr(hexLum(B.accent),hexLum(B.primary))<1.5) bg=contrastOn(B.primary);
+    let bg=B.primary; if(L==='panel'){ bg= cr(hexLum(B.accent),hexLum(B.primary))>=1.5 ? B.accent : contrastOn(B.primary); }
     ctx.fillStyle=bg; roundRect(ctx,kx,kickTop,kw,kickSize*1.9,kickSize*.4); ctx.fill(); ctx.fillStyle=contrastOn(bg); ctx.textBaseline='middle'; ctx.textAlign='left'; ctx.fillText(t,kx+kickSize*.8,kickTop+kickSize*.98); ctx.letterSpacing='0px'; }
 
   // headline
@@ -565,22 +580,23 @@ function render(){
 
   // safe zones
   const zones=[]; let safeHit=false;
-  if(state.fmt==='yt') zones.push({x:W*.78,y:H*.84,w:W*.22,h:H*.16,n:'таймкод'});
+  if(state.fmt==='yt') zones.push({x:W*.78,y:H*.84,w:W*.22,h:H*.16,n:'таймкод відео'});
   if(state.fmt==='story'){ zones.push({x:0,y:0,w:W,h:H*.13,n:'аватар і прогрес'}); zones.push({x:0,y:H*.84,w:W,h:H*.16,n:'відповідь і кнопки'}); }
-  if(state.fmt==='ig45'){ zones.push({x:0,y:0,w:W,h:(H-W)/2,n:'обрізка в сітці 1:1',soft:true}); zones.push({x:0,y:H-(H-W)/2,w:W,h:(H-W)/2,n:'обрізка в сітці 1:1',soft:true}); }
-  if(state.fmt==='og') zones.push({x:W*.78,y:H*.8,w:W*.22,h:H*.2,n:'превʼю в месенджерах'});
+  if(state.fmt==='og') zones.push({x:W*.78,y:H*.8,w:W*.22,h:H*.2,n:'обрізка у превʼю'});
   const tbW=Math.max(1,...fit.lines.map(lineW)); const tbX= align==='center'?(W-tbW)/2:textX; const tb={x:tbX,y:kickTop,w:tbW,h:total};
   zones.forEach(z=>{ const hit= tb.x<z.x+z.w && tb.x+tb.w>z.x && tb.y<z.y+z.h && tb.y+tb.h>z.y; if(hit&&!z.soft) safeHit=true;
     if(state.safe){ ctx.save(); ctx.fillStyle='rgba(255,60,60,.22)'; ctx.fillRect(z.x,z.y,z.w,z.h); ctx.strokeStyle='rgba(255,60,60,.9)'; ctx.setLineDash([u*1.5,u]); ctx.lineWidth=u*.4; ctx.strokeRect(z.x,z.y,z.w,z.h); ctx.fillStyle='#fff'; ctx.font=`700 ${u*2.6}px "Manrope"`; ctx.textBaseline='top'; ctx.textAlign='left'; ctx.fillText(z.n.toUpperCase(),z.x+u*1.5,z.y+u*1.2); ctx.restore(); } });
 
+  if(safeHit && !state.safe && !state.safeDismissed){ state.safe=true; $('#safeToggle').checked=true; return render(); }
+  if(!safeHit) state.safeDismissed=false;
   // checks
   const words=paras.flat().length;
   setRule('words', !state.headline.trim()?'bad': words<=7?'ok': words<=9?'warn':'bad', !state.headline.trim()?'Заголовка немає.':`${words} ${words===1?'слово':words<5?'слова':'слів'}${words>7?' — скоротіть або перенесіть частину в підзаголовок статті.':'.'}`);
   setRule('contrast', ratio>=4.5?'ok': ratio>=3?'warn':'bad', ratio>=4.5?`Контраст ${ratio.toFixed(1)}:1 — читається.`: ratio>=3?`Контраст ${ratio.toFixed(1)}:1 — на межі. Посильте затемнення або увімкніть плашку.`:`Контраст ${ratio.toFixed(1)}:1 — не читається. Увімкніть плашку або затемнення, або посуньте картинку.`);
   setRule('logo', (logoImg||B.name.trim())?'ok':'bad', logoImg?'Логотип на місці.': B.name.trim()?'Стоїть назва видання. Завантажте логотип у «Стилі редакції», щоб було впізнаваніше.':'Вкажіть назву видання або логотип у «Стилі редакції».');
-  setRule('safe', zones.length? (safeHit?'bad':'ok') : 'ok', zones.length? (safeHit?'Текст заходить у службову зону — увімкніть «службові зони» над макетом і змініть розкладку.':'Текст поза службовими зонами цього формату.') : 'У цього формату немає службових зон.');
+  setRule('safe', zones.length? (safeHit?'bad':'ok') : 'ok', zones.length? (safeHit?'Червона зона на макеті — це місце, яке соцмережа накриє своїми кнопками чи таймкодом. Посуньте текст: змініть розкладку або скоротіть заголовок.':'Текст не потрапляє під кнопки й таймкод соцмережі.') : 'У цього формату соцмережа нічого не перекриває.');
 
-  $('#fmtSt').textContent=f.name; $('#brandSt').textContent=B.name.trim()||'не заданий'; $('#imgSt').textContent= img?'своя картинка':'приклад'; $('#txtSt').textContent=LAYOUTS.find(l=>l.id===L).name+(L!=='panel'?' · '+OVERLAYS.find(o=>o.id===state.overlay).name.toLowerCase():'');
+  $('#styleName').textContent=B.name.trim()?'· '+B.name.trim():''; $('#imgSt').textContent= img?'своя картинка':'приклад'; $('#txtSt').textContent=`${words} ${words===1?'слово':words<5?'слова':'слів'}`; $('#laySt').textContent=LAYOUTS.find(l=>l.id===L).name+(L!=='panel'?' · '+OVERLAYS.find(o=>o.id===state.overlay).name.toLowerCase():'');
 }
 
 /* ---------- files ---------- */
@@ -627,10 +643,10 @@ function bindDrag(){ let d=null; c.addEventListener('pointerdown',e=>{ d={x:e.cl
   const up=()=>{ d=null; c.classList.remove('drag'); }; c.addEventListener('pointerup',up); c.addEventListener('pointercancel',up); }
 
 /* ---------- init ---------- */
-function bindBrand(){ const B=state.brand; $('#brandName').value=B.name; syncColorInputs(); buildFontSelect(); buildPairs();
+function bindBrand(){ const B=state.brand; $('#brandName').value=B.name; syncColorInputs(); buildFontSelect(); buildPairs(); buildLogoSize();
   if(B.logo){ loadImage(B.logo).then(i=>{ logoImg=i; $('#logoPrev').src=B.logo; $('#logoPrev').hidden=false; $('#logoNone').hidden=true; buildLogoColors(extractColors(i)); render(); }).catch(()=>{}); } }
 async function init(){
-  loadKit(); buildFormats(); buildKinds(); buildChips('#genreChips',GENRES,'genre'); buildChips('#moodChips',MOODS,'mood'); buildChips('#collageChips',COLLAGE,'collageStyle'); buildChips('#styleChips',STYLES,'illuStyle'); buildLayouts(); buildOverlays(); buildRules(); buildPresets(); bindBrand();
+  loadKit(); buildFormats(); buildKinds(); buildChips('#genreChips',GENRES,'genre'); buildLogoSize(); buildChips('#collageChips',COLLAGE,'collageStyle'); buildChips('#styleChips',STYLES,'illuStyle'); buildLayouts(); buildOverlays(); buildRules(); buildPresets(); bindBrand();
   buildRefs('#collageRefs','collagePhotos',4,true); buildRefs('#styleRefs','styleRefs',3,false);
   $('#topic').value=state.topic; $('#kicker').value=state.kicker; $('#headline').value=state.headline; $('#author').value=state.author; $('#heroEl').value=state.heroEl; $('#sideEls').value=state.sideEls; $('#dark').value=state.dark;
   $('#gen').addEventListener('toggle',()=>{ if($('#gen').open) updatePrompt(); });
@@ -642,9 +658,10 @@ async function init(){
   $('#headline').oninput=e=>{state.headline=e.target.value; render();};
   $('#author').oninput=e=>{state.author=e.target.value; render();};
   $('#dark').oninput=e=>{state.dark=+e.target.value; render();};
-  $('#safeToggle').onchange=e=>{state.safe=e.target.checked; render();};
+  $('#safeToggle').onchange=e=>{state.safe=e.target.checked; if(!state.safe) state.safeDismissed=true; render();};
+  $('#openStyle').onclick=()=>openDrawer(true); $('#closeStyle').onclick=()=>openDrawer(false); $('#drawerBg').onclick=()=>openDrawer(false); document.addEventListener('keydown',e=>{ if(e.key==='Escape') openDrawer(false); });
   $('#brandName').oninput=e=>{state.brand.name=e.target.value; saveKit(); render();};
-  const syncCol=(picker,text,key)=>{ $(picker).oninput=e=>{state.brand[key]=e.target.value.toUpperCase(); $(text).value=state.brand[key]; saveKit(); buildPairs(); render();}; $(text).oninput=e=>{ if(/^#[0-9a-f]{6}$/i.test(e.target.value)){ state.brand[key]=e.target.value.toUpperCase(); $(picker).value=e.target.value; saveKit(); buildPairs(); render(); } }; };
+  const syncCol=(picker,text,key)=>{ $(picker).oninput=e=>{state.brand[key]=e.target.value.toUpperCase(); $(text).value=state.brand[key]; saveKit(); buildPairs(); buildLogoColors(); render();}; $(text).oninput=e=>{ if(/^#[0-9a-f]{6}$/i.test(e.target.value)){ state.brand[key]=e.target.value.toUpperCase(); $(picker).value=e.target.value; saveKit(); buildPairs(); buildLogoColors(); render(); } }; };
   syncCol('#colPrimary','#colPrimaryT','primary'); syncCol('#colAccent','#colAccentT','accent');
   $('#fontSel').onchange=async e=>{ state.brand.font=e.target.value; saveKit(); await ensureFonts(); render(); };
   $('#fontPick').onclick=()=>$('#fontFile').click(); $('#fontFile').onchange=e=>setFontFile(e.target.files[0]);
