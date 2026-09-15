@@ -35,11 +35,14 @@ label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bot
 .brand{font:700 20px "Unbounded",sans-serif;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
 .brand i{display:inline-block;width:26px;height:18px;background:var(--hi);border-radius:2px;transform:skewX(-8deg)}
 .top .spacer{flex:1}
-.examples{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.tagline{margin:0;color:var(--muted);font-size:13px}
 .about{background:linear-gradient(135deg,rgba(255,210,63,.10),rgba(107,147,255,.06) 60%,transparent),var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:16px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
 .about .mark{width:60px;height:60px;border-radius:16px;background:var(--hi);display:grid;place-items:center;font:700 24px "Unbounded",sans-serif;color:#17191F;transform:rotate(-5deg);box-shadow:0 10px 24px rgba(255,210,63,.25)}
 .about p{margin:0;font-size:16px;line-height:1.55;max-width:70ch}
 .about p+p{margin-top:8px;color:var(--muted);font-size:14px}
+.about .try{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px;font-size:13px;color:var(--muted)}
+.about .try .chip{border-color:var(--hi);color:var(--ink);background:transparent}
+.about .try .chip:hover{background:var(--hi);color:#17191F}
 @media (max-width:600px){.about{grid-template-columns:1fr}}
 
 .btn{border:1px solid var(--line);background:var(--panel2);border-radius:8px;padding:8px 12px;font-weight:600;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
@@ -49,9 +52,9 @@ label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bot
 .btn.sm{padding:5px 9px;font-size:12px;border-radius:6px}
 
 /* workspace */
-.ws{display:grid;grid-template-columns:340px minmax(0,1fr) 260px;gap:16px;align-items:start}
-@media (max-width:1100px){.ws{grid-template-columns:330px minmax(0,1fr)}.checks{grid-column:1/-1}}
-@media (max-width:760px){.ws{grid-template-columns:1fr}.checks{grid-column:auto}}
+.ws{display:grid;grid-template-columns:360px minmax(0,1fr);gap:16px;align-items:start}
+@media (min-width:761px){.stage{position:sticky;top:12px}}
+@media (max-width:760px){.ws{grid-template-columns:1fr}}
 
 .side{display:flex;flex-direction:column;gap:10px}
 details.step{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
@@ -102,6 +105,13 @@ details.step .body{padding:12px 14px 14px}
 .refs .r button{position:absolute;right:2px;top:2px;width:18px;height:18px;border:0;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:11px;line-height:18px;padding:0}
 .refs .add{width:56px;height:56px;border:1px dashed var(--line);border-radius:6px;background:var(--panel2);font-size:20px;color:var(--muted)}
 .sub{border-left:3px solid var(--hi);padding-left:10px;margin:10px 0}
+details.gen{margin-top:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel2)}
+details.gen>summary{list-style:none;cursor:pointer;padding:10px 12px;font-weight:700;display:flex;align-items:center;gap:8px}
+details.gen>summary::-webkit-details-marker{display:none}
+details.gen>summary::before{content:"+";font:700 16px "Unbounded",sans-serif;color:var(--hi);width:18px}
+details.gen[open]>summary::before{content:"–"}
+details.gen>summary small{margin-left:auto;font-weight:500;color:var(--muted);font-size:12px}
+details.gen .gbody{padding:4px 12px 12px}
 .prompt-box{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px;font-size:12.5px;line-height:1.45;white-space:pre-wrap;max-height:150px;overflow:auto}
 .steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
 .steps3 div{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px;font-size:12px;line-height:1.35}
@@ -127,10 +137,15 @@ details.step .body{padding:12px 14px 14px}
 .toggle{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--muted)}
 .toggle input{width:auto}
 .canvas-wrap{position:relative;background:radial-gradient(circle,rgba(255,255,255,.09) 1px,transparent 1.2px) 0 0/18px 18px,#0A0C11;border:1px solid var(--line);border-radius:10px;padding:20px;display:grid;place-items:center;min-height:200px}
-#c{max-width:100%;max-height:70vh;width:auto;height:auto;display:block;box-shadow:var(--shadow);background:#222;cursor:grab;touch-action:none}
+#c{max-width:100%;max-height:56vh;width:auto;height:auto;display:block;box-shadow:var(--shadow);background:#222;cursor:grab;touch-action:none}
 #c.drag{cursor:grabbing}
-.sample{position:absolute;top:8px;left:8px;background:var(--hi);color:#17191F;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px}
-.dragtip{position:absolute;bottom:8px;right:10px;font-size:11px;color:var(--muted);background:var(--panel2);border:1px solid var(--line);padding:2px 8px;border-radius:999px}
+.sample{background:var(--hi);color:#17191F;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px}
+.status{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.status .pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel2)}
+.status .pill i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.status .pill[data-s="ok"] i{background:var(--ok)}.status .pill[data-s="warn"] i{background:var(--warn)}.status .pill[data-s="bad"] i{background:var(--bad)}
+.status-msg{font-size:12px;color:var(--muted);margin:6px 0 0}
+.status-msg:empty{display:none}
 .stage-foot{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
 .stage-foot .hint{margin:0}
 
@@ -162,7 +177,7 @@ details.step .body{padding:12px 14px 14px}
 <header class="top">
   <div class="brand"><i></i>Обкладник</div>
   <div class="spacer"></div>
-  <div class="examples">Приклади: <span id="presetBtns"></span></div>
+  <p class="tagline">Обкладинки для статей, YouTube, Instagram і Stories</p>
 </header>
 
 <section class="about">
@@ -170,6 +185,7 @@ details.step .body{padding:12px 14px 14px}
   <div>
     <p>Обкладник — ваш помічник для швидких обкладинок. Додайте заголовок, рубрику й картинку, а він збере макет для статті, YouTube, Instagram чи Stories у стилі вашої редакції.</p>
     <p>Якщо для матеріалу потрібна окрема ілюстрація чи колаж, Обкладник допоможе підготувати промпт для ChatGPT.</p>
+    <div class="try">Подивіться на готовому прикладі: <span id="presetBtns"></span></div>
   </div>
 </section>
 
@@ -215,46 +231,51 @@ details.step .body{padding:12px 14px 14px}
     <details class="step">
       <summary><span class="n">3</span>Картинка<span class="st" id="imgSt"></span></summary>
       <div class="body">
-        <div class="drop" id="drop" style="margin-top:0"><b>Вставте свою картинку</b> (Ctrl/⌘+V), перетягніть сюди або <label for="imgFile" style="display:inline;color:var(--accent);cursor:pointer;font-weight:700">оберіть файл</label><input type="file" id="imgFile" accept="image/*"><div class="hint" style="margin-top:4px">Потім посуньте її мишкою прямо на макеті.</div></div>
-        <p class="note">Обкладник не генерує картинки сам — він готує промпт і збирає все для вашого ChatGPT. Нижче — якщо картинку треба створити.</p>
+        <div class="drop" id="drop" style="margin-top:0"><b>Вставте свою картинку</b> (Ctrl/⌘+V), перетягніть сюди або <label for="imgFile" style="display:inline;color:var(--accent);cursor:pointer;font-weight:700">оберіть файл</label><input type="file" id="imgFile" accept="image/*"><div class="hint" style="margin-top:4px">Далі її можна посунути мишкою прямо на макеті.</div></div>
 
-        <div class="field" style="margin-top:12px"><label>Що створюємо</label><div class="kinds" id="kinds"></div></div>
-        <div class="field"><label>Жанр матеріалу</label><div class="chips" id="genreChips"></div></div>
-        <div class="field"><label for="topic">Про що матеріал</label><input id="topic" placeholder="Наприклад: тарифи на електроенергію зростуть із жовтня"></div>
-        <div class="field"><label>Настрій</label><div class="chips" id="moodChips"></div></div>
+        <details class="gen" id="gen">
+          <summary>Немає картинки? Створіть її в ChatGPT<small>промпт готуємо ми</small></summary>
+          <div class="gbody">
+            <p class="hint" style="margin:0 0 10px">Обкладник не генерує картинки сам. Оберіть, що потрібно, скопіюйте готовий промпт у свій ChatGPT і вставте результат вище.</p>
+            <div class="field"><label>Що створюємо</label><div class="kinds" id="kinds"></div></div>
+            <div class="field"><label for="topic">Про що матеріал</label><input id="topic" placeholder="Наприклад: тарифи на електроенергію зростуть із жовтня"></div>
+            <div class="field"><label>Жанр</label><div class="chips" id="genreChips"></div></div>
+            <div class="field"><label>Настрій</label><div class="chips" id="moodChips"></div></div>
 
-        <div class="sub" id="subCollage" hidden>
-          <div class="field"><label for="heroEl">Головний елемент — фокус колажу</label><input id="heroEl" placeholder="Наприклад: лічильник електроенергії крупним планом"></div>
-          <div class="field"><label for="sideEls">Додаткові елементи, по одному в рядку (2–3)</label><textarea id="sideEls" style="min-height:70px" placeholder="платіжка з цифрами&#10;лампочка&#10;рука з монетами"></textarea></div>
-          <div class="field"><label>Манера колажу</label><div class="chips" id="collageChips"></div></div>
-          <div class="field"><label>Ваші фото для колажу (до 4) — необовʼязково</label>
-            <div class="refs" id="collageRefs"></div>
-            <p class="hint">Фото 1 стане головним. Кнопка збирає їх в один пронумерований аркуш — вставте його в ChatGPT разом із промптом.</p>
-            <button class="btn sm" id="copyCollageSheet" style="margin-top:6px">Скопіювати аркуш фото</button>
+            <div class="sub" id="subCollage" hidden>
+              <div class="field"><label for="heroEl">Головний елемент — фокус колажу</label><input id="heroEl" placeholder="Наприклад: лічильник електроенергії крупним планом"></div>
+              <div class="field"><label for="sideEls">Додаткові елементи, по одному в рядку (2–3)</label><textarea id="sideEls" style="min-height:70px" placeholder="платіжка з цифрами&#10;лампочка&#10;рука з монетами"></textarea></div>
+              <div class="field"><label>Манера колажу</label><div class="chips" id="collageChips"></div></div>
+              <div class="field"><label>Ваші фото для колажу (до 4) — необовʼязково</label>
+                <div class="refs" id="collageRefs"></div>
+                <p class="hint">Фото 1 стане головним. Кнопка збирає їх в один пронумерований аркуш — вставте його в ChatGPT разом із промптом.</p>
+                <button class="btn sm" id="copyCollageSheet" style="margin-top:6px">Скопіювати аркуш фото</button>
+              </div>
+            </div>
+
+            <div class="sub" id="subIllu" hidden>
+              <div class="field"><label>Стиль ілюстрації</label><div class="chips" id="styleChips"></div></div>
+              <div class="field"><label>Референси стилю та кольору (до 3) — необовʼязково</label>
+                <div class="refs" id="styleRefs"></div>
+                <p class="hint">ChatGPT візьме з них манеру й палітру, а не зміст. Кнопка збирає референси в один аркуш — вставте його в чат разом із промптом.</p>
+                <button class="btn sm" id="copyStyleSheet" style="margin-top:6px">Скопіювати аркуш референсів</button>
+              </div>
+            </div>
+
+            <div class="field"><label>Промпт для ChatGPT <span class="chips" style="display:inline-flex;margin-left:6px;vertical-align:middle"><button class="chip" id="langEn" aria-pressed="true" style="padding:2px 8px">EN</button><button class="chip" id="langRu" aria-pressed="false" style="padding:2px 8px">UA</button></span></label>
+              <div class="prompt-box" id="promptBox"></div>
+            </div>
+            <div class="row">
+              <button class="btn primary" id="copyPrompt">Скопіювати промпт</button>
+              <a class="btn" style="color:var(--blue);text-decoration:none" href="https://chatgpt.com/" target="_blank" rel="noopener">Відкрити ChatGPT ↗</a>
+            </div>
+            <div class="steps3">
+              <div><b>1</b>Скопіюйте промпт</div>
+              <div><b>2</b>Згенеруйте у своєму ChatGPT</div>
+              <div><b>3</b>Вставте картинку вище — Ctrl/⌘+V</div>
+            </div>
           </div>
-        </div>
-
-        <div class="sub" id="subIllu" hidden>
-          <div class="field"><label>Стиль ілюстрації</label><div class="chips" id="styleChips"></div></div>
-          <div class="field"><label>Референси стилю та кольору (до 3) — необовʼязково</label>
-            <div class="refs" id="styleRefs"></div>
-            <p class="hint">ChatGPT візьме з них манеру й палітру, а не зміст. Кнопка збирає референси в один аркуш — вставте його в чат разом із промптом.</p>
-            <button class="btn sm" id="copyStyleSheet" style="margin-top:6px">Скопіювати аркуш референсів</button>
-          </div>
-        </div>
-
-        <div class="field"><label>Промпт для ChatGPT <span class="chips" style="display:inline-flex;margin-left:6px;vertical-align:middle"><button class="chip" id="langEn" aria-pressed="true" style="padding:2px 8px">EN</button><button class="chip" id="langRu" aria-pressed="false" style="padding:2px 8px">UA</button></span></label>
-          <div class="prompt-box" id="promptBox"></div>
-        </div>
-        <div class="row">
-          <button class="btn primary" id="copyPrompt">Скопіювати промпт</button>
-          <a class="btn" style="color:var(--blue);text-decoration:none" href="https://chatgpt.com/" target="_blank" rel="noopener">Відкрити ChatGPT ↗</a>
-        </div>
-        <div class="steps3">
-          <div><b>1</b>Скопіюйте промпт</div>
-          <div><b>2</b>Згенеруйте у своєму ChatGPT</div>
-          <div><b>3</b>Вставте картинку сюди — Ctrl/⌘+V</div>
-        </div>
+        </details>
       </div>
     </details>
 
@@ -282,21 +303,15 @@ details.step .body{padding:12px 14px 14px}
     </div>
     <div class="canvas-wrap" id="cw">
       <canvas id="c" width="1280" height="720"></canvas>
-      <span class="sample" id="sampleTag">приклад — вставте свою картинку</span>
-      <span class="dragtip">Тягніть картинку, щоб посунути</span>
     </div>
     <div class="stage-foot">
       <button class="btn primary" id="exportBtn">Завантажити PNG</button>
       <button class="btn" id="copyImg">Скопіювати картинку</button>
-      <span class="hint">У повному розмірі формату.</span>
+      <span class="hint" id="stageHint"><span class="sample" id="sampleTag">приклад</span> — вставте свою картинку у кроці 3. Картинку можна тягнути мишкою.</span>
     </div>
+    <div class="status" id="ruleList" aria-label="Перевірка"></div>
+    <p class="status-msg" id="statusMsg"></p>
   </section>
-
-  <aside class="checks">
-    <h2>Перевірка</h2>
-    <p class="lead">Те, що Обкладник перевіряє сам, щоразу коли ви щось змінюєте.</p>
-    <div id="ruleList"></div>
-  </aside>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -323,7 +338,7 @@ const GENRES = [
   {id:'news', name:'Новина', t:'urgent, factual, here-and-now', tu:'терміново, фактично, тут і зараз', en:'documentary press photograph, decisive moment, natural light, real location, slight motion', ru:'документальна репортажна фотографія, вирішальний момент, природне світло, реальна локація'},
   {id:'interview', name:'Інтервʼю', t:'personal, human-centred, one character', tu:'особисто, про людину, один герой', en:'editorial portrait, one person, shallow depth of field, studio or window light, calm expression, plenty of negative space', ru:'редакційний портрет, одна людина, мала глибина різкості, спокійний вираз, багато повітря в кадрі'},
   {id:'invest', name:'Розслідування', t:'serious, dark, something hidden being revealed', tu:'серйозно, темно, приховане виходить назовні', en:'moody investigative still life, documents, hard side light, deep shadows, cold palette, cinematic', ru:'похмурий натюрморт для розслідування, документи, жорстке бокове світло, глибокі тіні, холодна палітра'},
-  {id:'explain', name:'Пояснювалка', t:'clear, didactic, one idea explained simply', tu:'зрозуміло, дидактично, одна ідея просто', en:'clean conceptual photograph, one clear metaphor, simple objects, lots of empty background', ru:'чиста концептуальна фотографія, одна зрозуміла метафора, прості предмети, багато порожнього фону'},
+  {id:'explain', name:'Експлейнер', t:'clear, didactic, one idea explained simply', tu:'зрозуміло, дидактично, одна ідея просто', en:'clean conceptual photograph, one clear metaphor, simple objects, lots of empty background', ru:'чиста концептуальна фотографія, одна зрозуміла метафора, прості предмети, багато порожнього фону'},
   {id:'column', name:'Колонка', t:'reflective, symbolic, quiet', tu:'рефлексивно, символічно, тихо', en:'minimalist symbolic photograph, single object on plain background, soft light, quiet mood', ru:'мінімалістична символічна фотографія, один предмет на простому фоні, мʼяке світло'},
 ];
 const MOODS = [
@@ -352,7 +367,7 @@ const OVERLAYS = [{id:'none',name:'Немає'},{id:'darken',name:'Затемн�
 const PRESETS = [
   {name:'Новина', kicker:'Економіка', headline:'*Світло* подорожчає: що зміниться у платіжках', author:'', layout:'bottom', overlay:'darken', dark:70, kind:'photo', genre:'news', mood:'alarm', topic:'Тарифи на електроенергію зростуть із жовтня', sample:'city', fx:60, fy:40},
   {name:'Інтервʼю', kicker:'Інтервʼю', headline:'«До зими не готові, але *будемо*»', author:'Розмовляла Дарʼя Сенчихіна', layout:'panel', overlay:'none', dark:70, kind:'photo', genre:'interview', mood:'neutral', topic:'Розмова з головою ОСББ про підготовку будинку до зими', sample:'portrait', fx:50, fy:30},
-  {name:'Пояснювалка', kicker:'Пояснюємо', headline:'Як читати нову *платіжку*\nза дві хвилини', author:'', layout:'top', overlay:'plate', dark:70, kind:'illu', genre:'explain', mood:'warm', topic:'Як влаштована нова платіжка за комунальні послуги', sample:'flat', fx:50, fy:50},
+  {name:'Експлейнер', kicker:'Пояснюємо', headline:'Як читати нову *платіжку*\nза дві хвилини', author:'', layout:'top', overlay:'plate', dark:70, kind:'illu', genre:'explain', mood:'warm', topic:'Як влаштована нова платіжка за комунальні послуги', sample:'flat', fx:50, fy:50},
 ];
 
 const state = {
@@ -401,8 +416,9 @@ function buildRules(){ const R=[
     {id:'contrast', t:'Текст читається', d:'Контраст між текстом і тим, що під ним.'},
     {id:'logo', t:'Видання підписане', d:'Логотип або назва на місці.'},
     {id:'safe', t:'Службові зони вільні', d:'Таймкод YouTube, кнопки в Stories, обрізка в сітці.'},
-  ]; const box=$('#ruleList'); box.innerHTML=''; R.forEach(r=>{ const d=document.createElement('div'); d.className='rule'; d.id='rule-'+r.id; d.dataset.s='none'; d.innerHTML=`<span class="dot"></span><div><b>${r.t}</b><span>${r.d}</span></div>`; box.appendChild(d); }); }
-function setRule(id,s,txt){ const el=$('#rule-'+id); if(!el) return; el.dataset.s=s; if(txt) el.querySelector('span:last-child').textContent=txt; }
+  ]; const box=$('#ruleList'); box.innerHTML=''; R.forEach(r=>{ const d=document.createElement('span'); d.className='pill'; d.id='rule-'+r.id; d.dataset.s='none'; d.title=r.d; d.innerHTML=`<i></i>${r.t}`; box.appendChild(d); }); }
+const ruleMsgs={};
+function setRule(id,s,txt){ const el=$('#rule-'+id); if(!el) return; el.dataset.s=s; ruleMsgs[id]= s==='ok'? '' : txt; $('#statusMsg').textContent=Object.values(ruleMsgs).filter(Boolean).join(' '); }
 function buildPairs(){ const box=$('#pairs'); box.innerHTML=''; PAIRS.forEach(([p,a])=>{ const b=document.createElement('button'); b.type='button'; b.className='pair'; b.title=`${p} + ${a}`; b.setAttribute('aria-pressed', state.brand.primary.toUpperCase()===p && state.brand.accent.toUpperCase()===a); b.innerHTML=`<span style="background:${p}"></span><span style="background:${a}"></span>`; b.onclick=()=>{ state.brand.primary=p; state.brand.accent=a; syncColorInputs(); saveKit(); buildPairs(); render(); }; box.appendChild(b); }); }
 function buildLogoColors(cols){ const f=$('#logoColorsField'), box=$('#logoColors'); box.innerHTML=''; if(!cols||!cols.length){ f.hidden=true; return; } f.hidden=false;
   cols.forEach(hex=>{ const b=document.createElement('button'); b.type='button'; b.className='sw'; b.style.background=hex; b.title=hex; b.setAttribute('aria-pressed', state.brand.primary.toUpperCase()===hex); b.onclick=()=>{ if(state.brand.primary.toUpperCase()===hex){ state.brand.accent=hex; toast('Тепер це акцент'); } else { state.brand.primary=hex; toast('Тепер це основний колір'); } syncColorInputs(); saveKit(); buildLogoColors(cols); buildPairs(); render(); }; box.appendChild(b); }); }
@@ -457,10 +473,10 @@ function updatePrompt(){ $('#promptBox').textContent=buildPrompt(); }
 function hexLum(hex){ const c=hex.replace('#',''); const [r,g,b]=[0,2,4].map(i=>parseInt(c.substr(i,2),16)/255).map(v=>v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)); return .2126*r+.7152*g+.0722*b; }
 function contrastOn(hex){ return hexLum(hex)>.4 ? '#17191F' : '#FFFFFF'; }
 function cr(l1,l2){ return (Math.max(l1,l2)+.05)/(Math.min(l1,l2)+.05); }
-function parseHeadline(text){ return text.split('\n').map(p=>{ const toks=[]; p.split(/(\*[^*]+\*)/).forEach(seg=>{ if(!seg) return; const hi=seg.startsWith('*')&&seg.endsWith('*')&&seg.length>2; const body=hi?seg.slice(1,-1):seg; const glueFirst= toks.length>0 && !/^\s/.test(body); body.split(/\s+/).filter(Boolean).forEach((w,i)=>toks.push({w,hi,glue:i===0&&glueFirst})); }); return toks; }).filter(t=>t.length); }
+function parseHeadline(text){ return text.split('\n').map(p=>{ const toks=[]; let prevSpace=true; p.split(/(\*[^*]+\*)/).forEach(seg=>{ if(!seg) return; const hi=seg.startsWith('*')&&seg.endsWith('*')&&seg.length>2; const body=hi?seg.slice(1,-1):seg; const glueFirst= toks.length>0 && !prevSpace && !/^\s/.test(body); body.split(/\s+/).filter(Boolean).forEach((w,i)=>toks.push({w,hi,glue:i===0&&glueFirst})); prevSpace=/\s$/.test(body); }); return toks; }).filter(t=>t.length); }
 function lineText(toks){ return toks.map((t,i)=>(i>0&&!t.glue?' ':'')+t.w).join(''); }
 function wrapToks(ctx,toks,maxW){ const lines=[]; let cur=[]; for(const t of toks){ const test=[...cur,t]; if(ctx.measureText(lineText(test)).width>maxW && cur.length){ lines.push(cur); cur=[t]; } else cur=test; } if(cur.length) lines.push(cur); return lines; }
-function fitHeadline(ctx,paras,font,weight,maxW,maxLines,start,min){ let size=start, lines=[]; while(size>=min){ ctx.font=`${weight} ${size}px "${font}"`; lines=paras.flatMap(p=>wrapToks(ctx,p,maxW)); const tooWide=lines.some(l=>ctx.measureText(lineText(l)).width>maxW); if(lines.length<=maxLines && !tooWide) break; size-=Math.max(2,Math.round(size*.06)); } return {size,lines}; }
+function fitHeadline(ctx,paras,font,weight,maxW,maxLines,start,min,maxH){ let size=start, lines=[]; while(size>=min){ ctx.font=`${weight} ${size}px "${font}"`; lines=paras.flatMap(p=>wrapToks(ctx,p,maxW)); const tooWide=lines.some(l=>ctx.measureText(lineText(l)).width>maxW); const tooTall= maxH && lines.length*size*1.12>maxH; if(lines.length<=maxLines && !tooWide && !tooTall) break; size-=Math.max(2,Math.round(size*.06)); } return {size,lines}; }
 function drawCover(ctx,im,x,y,w,h,fx,fy){ const s=Math.max(w/im.width,h/im.height); const sw=w/s, sh=h/s; const sx=(im.width-sw)*fx, sy=(im.height-sh)*fy; ctx.drawImage(im,sx,sy,sw,sh,x,y,w,h); }
 function drawSample(ctx,w,h){
   const fx=state.fx/100, fy=state.fy/100; const k=state.sample;
@@ -481,7 +497,7 @@ const c=$('#c'), ctx=c.getContext('2d');
 function render(){
   const f=FORMATS.find(x=>x.id===state.fmt); const W=f.w,H=f.h; c.width=W; c.height=H;
   const B=state.brand; const tall=H>W; const u=Math.min(W,H)/100; const pad=u*6;
-  $('#stageTitle').textContent=f.name; $('#stageDims').textContent=`${W} × ${H}`; $('#sampleTag').hidden=!!img;
+  $('#stageTitle').textContent=f.name; $('#stageDims').textContent=`${W} × ${H}`; $('#stageHint').innerHTML= img? 'Картинку можна тягнути мишкою, щоб посунути.' : '<span class="sample">приклад</span> — вставте свою картинку у кроці 3. Картинку можна тягнути мишкою.';
 
   let ix=0,iy=0,iw=W,ih=H,panel=null; const L=state.layout; const OV= L==='panel'?'none':state.overlay;
   if(L==='panel'){ if(tall){ panel={x:0,y:H*.55,w:W,h:H*.45}; ih=H*.55; } else { panel={x:0,y:0,w:W*.46,h:H}; ix=W*.46; iw=W*.54; } }
@@ -497,14 +513,16 @@ function render(){
   if(OV==='plate'){ textColor=contrastOn(B.primary); }
   const paras=parseHeadline(state.headline.trim()||' ');
   const start= tall? u*9 : u*11, min=u*4;
-  const fit=fitHeadline(ctx,paras,cf.family,cf.weight,textW,maxLines,start,min);
+  const logoH=u*7, kickH=(state.kicker.trim()? u*2.8*1.9+u*2.2:0), authH=(state.author.trim()? u*2.2+u*3.2:0);
+  const maxH= L==='panel' ? panel.h-pad*2-logoH-u*3-kickH-authH : L==='top' ? H*.55 : H*.6;
+  const fit=fitHeadline(ctx,paras,cf.family,cf.weight,textW,maxLines,start,min,maxH);
   const lh=fit.size*1.12, blockH=fit.lines.length*lh; const authorSize=u*3.2, kickSize=u*2.8, gap=u*2.2;
-  const hasAuthor=!!state.author.trim(), hasKick=!!state.kicker.trim(); const logoH=u*7;
+  const hasAuthor=!!state.author.trim(), hasKick=!!state.kicker.trim();
   const total= (hasKick? kickSize*1.9+gap:0) + blockH + (hasAuthor? gap+authorSize:0);
   let top;
   if(L==='top'){ top= pad + (logoImg||B.name.trim()? logoH+gap*1.5 : 0); if(state.fmt==='story') top+=u*14; }
   else if(L==='center'){ top=(H-total)/2; }
-  else if(L==='panel'){ top=panel.y+panel.h-pad-total; }
+  else if(L==='panel'){ top=Math.max(panel.y+pad+logoH+u*3, panel.y+panel.h-pad-total); }
   else { top=H-pad-total-(state.fmt==='story'?u*14:0); }
   const kickTop=top, hlTop= top + (hasKick? kickSize*1.9+gap:0), authorY= hlTop+blockH+gap+authorSize*.85;
 
@@ -615,6 +633,7 @@ async function init(){
   loadKit(); buildFormats(); buildKinds(); buildChips('#genreChips',GENRES,'genre'); buildChips('#moodChips',MOODS,'mood'); buildChips('#collageChips',COLLAGE,'collageStyle'); buildChips('#styleChips',STYLES,'illuStyle'); buildLayouts(); buildOverlays(); buildRules(); buildPresets(); bindBrand();
   buildRefs('#collageRefs','collagePhotos',4,true); buildRefs('#styleRefs','styleRefs',3,false);
   $('#topic').value=state.topic; $('#kicker').value=state.kicker; $('#headline').value=state.headline; $('#author').value=state.author; $('#heroEl').value=state.heroEl; $('#sideEls').value=state.sideEls; $('#dark').value=state.dark;
+  $('#gen').addEventListener('toggle',()=>{ if($('#gen').open) updatePrompt(); });
   updatePrompt();
   $('#topic').oninput=e=>{state.topic=e.target.value; updatePrompt();};
   $('#heroEl').oninput=e=>{state.heroEl=e.target.value; updatePrompt();};
