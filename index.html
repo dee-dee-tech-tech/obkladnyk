@@ -6,6 +6,7 @@
 <meta name="description" content="Обкладник — помічник для швидких обкладинок для статей, YouTube, Instagram та Stories у стилі вашої редакції.">
 <title>Обкладник</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;500;600;700;800&family=Montserrat:wght@800&family=Rubik:wght@800&family=Golos+Text:wght@800&family=Arsenal:wght@700&family=Onest:wght@800&family=Oswald:wght@600&family=Roboto+Condensed:wght@700&family=Fira+Sans+Condensed:wght@700&family=Playfair+Display:wght@700&family=Lora:wght@700&family=Merriweather:wght@900&family=Cormorant+Garamond:wght@700&family=Roboto+Slab:wght@700&family=Bitter:wght@800&family=Russo+One&family=Comfortaa:wght@700&display=swap">
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 <style>
@@ -16,6 +17,7 @@
   --shadow:0 18px 50px rgba(0,0,0,.55);
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{height:100%}
 body{margin:0;background:radial-gradient(900px 520px at 8% -8%,rgba(255,210,63,.13),transparent 60%),radial-gradient(800px 520px at 100% 0%,rgba(107,147,255,.12),transparent 60%),var(--bg);background-attachment:fixed;color:var(--ink);font:14px/1.5 "Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;padding-inline:16px;padding-block:0 24px}
 h1,h2,h3{margin:0;text-wrap:balance}
@@ -162,6 +164,10 @@ details.gen .gbody{padding:4px 12px 12px}
 .stage-foot{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
 .stage-foot .hint{margin:0}
 
+.foot{margin-top:28px;padding-top:12px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);text-align:center;letter-spacing:.02em}
+.foot a{color:var(--muted);text-decoration:underline dotted}
+.foot a:hover{color:var(--ink)}
+
 /* checks */
 .checks{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
 .checks h2{font:700 14px "Unbounded",sans-serif;margin-bottom:4px;color:var(--hi)}
@@ -190,8 +196,6 @@ details.gen .gbody{padding:4px 12px 12px}
 <header class="top">
   <div class="brand"><i></i>Обкладник</div>
   <p class="tagline">Обкладинки для статей, YouTube, Instagram і Stories</p>
-  <div class="spacer"></div>
-  <button class="btn" id="openStyle"><span class="dot" id="styleDot"></span>Стиль редакції<small id="styleName"></small></button>
 </header>
 
 <section class="about">
@@ -222,14 +226,14 @@ details.gen .gbody{padding:4px 12px 12px}
       <summary><span class="n">2</span>Картинка<span class="st" id="imgSt"></span></summary>
       <div class="body">
         <div class="drop" id="drop" style="margin-top:0"><b>Вставте свою картинку</b> (Ctrl+V), перетягніть сюди або <label for="imgFile" style="display:inline;color:var(--accent);cursor:pointer;font-weight:700">оберіть файл</label><input type="file" id="imgFile" accept="image/*"><div class="hint" style="margin-top:4px">Далі її можна посунути мишкою прямо на макеті.</div></div>
+        <div class="row" id="imgRow" hidden style="margin-top:8px;align-items:center"><span class="hint" style="margin:0;flex:1 1 auto" id="imgName">Картинку вставлено</span><button class="btn sm" id="imgRemove" style="flex:0 0 auto">Прибрати картинку</button></div>
 
         <details class="gen" id="gen">
-          <summary>Немає картинки? Створіть її в ChatGPT<small>промпт готуємо ми</small></summary>
+          <summary>Немає фото? Створіть ілюстрацію чи колаж у ChatGPT<small>промпт готуємо ми</small></summary>
           <div class="gbody">
-            <p class="hint" style="margin:0 0 10px">Обкладник не генерує картинки сам. Оберіть, що потрібно, скопіюйте готовий промпт у свій ChatGPT і вставте результат вище.</p>
+            <p class="hint" style="margin:0 0 10px">Обкладник не генерує картинки сам. Оберіть, що потрібно, скопіюйте готовий промпт у свій ChatGPT і вставте результат вище. Фото не генеруємо: те, що виглядає як знімок, читач сприймає як документ.</p>
             <div class="field"><label>Що створюємо</label><div class="kinds" id="kinds"></div></div>
             <div class="field"><label for="topic">Про що матеріал</label><input id="topic" placeholder="Наприклад: тарифи на електроенергію зростуть із жовтня"></div>
-            <div class="field"><label>Жанр</label><div class="chips" id="genreChips"></div></div>
 
             <div class="sub" id="subCollage" hidden>
               <div class="field"><label for="heroEl">Головний елемент — фокус колажу</label><input id="heroEl" placeholder="Наприклад: лічильник електроенергії крупним планом"></div>
@@ -275,6 +279,45 @@ details.gen .gbody{padding:4px 12px 12px}
         <div class="field" id="overlayField"><label>Підкладка під текстом</label><div class="overlays" id="overlays"></div>
           <div id="darkRow" style="margin-top:8px"><label for="dark">Сила затемнення</label><input type="range" id="dark" min="20" max="100" value="70"></div>
         </div>
+        <div class="field"><label class="toggle" style="color:var(--ink)"><input type="checkbox" id="aiBadge"> Плашка «Створено за допомогою ШІ»</label>
+          <div id="aiBadgeRow" hidden style="margin-top:6px"><input id="aiBadgeText" maxlength="48" placeholder="Створено за допомогою ШІ"><p class="hint">Невелика плашка в куті обкладинки. Вмикається сама, щойно ви копіюєте промпт для ChatGPT.</p></div>
+        </div>
+      </div>
+    </details>
+    <details class="step">
+      <summary><span class="n">4</span>Стиль редакції<span class="st" id="styleName"></span></summary>
+      <div class="body">
+<p class="hint" style="margin:0 0 12px">Налаштовується один раз і запамʼятовується у цьому браузері.</p>
+  <div class="field"><label for="brandName">Назва видання</label><input id="brandName" placeholder="Наприклад: Міські новини"></div>
+  <div class="field"><label>Логотип (PNG із прозорістю)</label>
+    <div class="logo-drop"><img id="logoPrev" alt="" hidden><span id="logoNone" class="hint" style="margin:0">Немає логотипа — стоятиме назва</span><span style="flex:1"></span><button class="btn sm" id="logoRemove" hidden>Прибрати</button><button class="btn sm" id="logoPick">Завантажити</button><input type="file" id="logoFile" accept="image/*" hidden></div>
+  </div>
+  <div class="row">
+    <div class="field"><label>Розмір логотипа</label><div class="chips" id="logoSizeChips"></div></div>
+    <div class="field"><label>Кут</label><div class="chips" id="logoPosChips"></div></div>
+  </div>
+  <div class="field"><label for="logoScale">Точніше: <span id="logoScaleV">100%</span></label><input type="range" id="logoScale" min="50" max="220" value="100"></div>
+  <div class="field" id="logoColorsField" hidden>
+    <label>Кольори з вашого логотипа</label>
+    <div class="lc"><span>Основний:</span><div class="pairs" id="logoColorsP"></div></div>
+    <div class="lc"><span>Акцент:</span><div class="pairs" id="logoColorsA"></div></div>
+  </div>
+  <div class="field"><label>Готова пара «основний + акцент»</label><div class="pairs" id="pairs"></div></div>
+  <div class="field">
+    <div class="colrow">
+      <div><label for="colPrimary">Основний</label><div class="c"><input type="color" id="colPrimary" value="#0E1F5B"><input type="text" id="colPrimaryT" value="#0E1F5B" maxlength="7" aria-label="Код основного кольору"></div></div>
+      <div><label for="colAccent">Акцент</label><div class="c"><input type="color" id="colAccent" value="#FFD23F"><input type="text" id="colAccentT" value="#FFD23F" maxlength="7" aria-label="Код акцентного кольору"></div></div>
+    </div>
+    <p class="hint">Основний — рубрика, панелі та плашки. Акцент — виділені слова. Код кольору потрібен лише якщо він у вас є.</p>
+  </div>
+  <div class="field"><label for="fontSel">Шрифт заголовка</label>
+    <div class="fontrow">
+      <select id="fontSel"></select>
+      <button class="btn sm" id="fontPick" title="Завантажити свій шрифт (.ttf, .otf, .woff)">Свій шрифт</button>
+      <input type="file" id="fontFile" accept=".ttf,.otf,.woff,.woff2,font/*">
+    </div>
+    <p class="hint">Є фірмовий шрифт редакції? Завантажте файл — він зʼявиться у списку.</p>
+  </div>
       </div>
     </details>
   </aside>
@@ -300,37 +343,9 @@ details.gen .gbody{padding:4px 12px 12px}
   </section>
 </div>
 
-<div class="drawer-bg" id="drawerBg" hidden></div>
-<aside class="drawer" id="drawer" hidden aria-label="Стиль редакції">
-  <div class="drawer-head"><h2>Стиль редакції</h2><button class="btn sm" id="closeStyle">Готово</button></div>
-  <p class="hint" style="margin:0 0 14px">Налаштовується один раз і запамʼятовується у цьому браузері. Зміни одразу видно на макеті праворуч.</p>
-  <div class="field"><label for="brandName">Назва видання</label><input id="brandName" placeholder="Наприклад: Міські новини"></div>
-  <div class="field"><label>Логотип (PNG із прозорістю)</label>
-    <div class="logo-drop"><img id="logoPrev" alt="" hidden><span id="logoNone" class="hint" style="margin:0">Немає логотипа — стоятиме назва</span><span style="flex:1"></span><button class="btn sm" id="logoPick">Завантажити</button><input type="file" id="logoFile" accept="image/*" hidden></div>
-  </div>
-  <div class="field"><label>Розмір логотипа</label><div class="chips" id="logoSizeChips"></div></div>
-  <div class="field" id="logoColorsField" hidden>
-    <label>Кольори з вашого логотипа</label>
-    <div class="lc"><span>Основний:</span><div class="pairs" id="logoColorsP"></div></div>
-    <div class="lc"><span>Акцент:</span><div class="pairs" id="logoColorsA"></div></div>
-  </div>
-  <div class="field"><label>Готова пара «основний + акцент»</label><div class="pairs" id="pairs"></div></div>
-  <div class="field">
-    <div class="colrow">
-      <div><label for="colPrimary">Основний</label><div class="c"><input type="color" id="colPrimary" value="#0E1F5B"><input type="text" id="colPrimaryT" value="#0E1F5B" maxlength="7" aria-label="Код основного кольору"></div></div>
-      <div><label for="colAccent">Акцент</label><div class="c"><input type="color" id="colAccent" value="#FFD23F"><input type="text" id="colAccentT" value="#FFD23F" maxlength="7" aria-label="Код акцентного кольору"></div></div>
-    </div>
-    <p class="hint">Основний — рубрика, панелі та плашки. Акцент — виділені слова. Код кольору потрібен лише якщо він у вас є.</p>
-  </div>
-  <div class="field"><label for="fontSel">Шрифт заголовка</label>
-    <div class="fontrow">
-      <select id="fontSel"></select>
-      <button class="btn sm" id="fontPick" title="Завантажити свій шрифт (.ttf, .otf, .woff)">Свій шрифт</button>
-      <input type="file" id="fontFile" accept=".ttf,.otf,.woff,.woff2,font/*">
-    </div>
-    <p class="hint">Є фірмовий шрифт редакції? Завантажте файл — він зʼявиться у списку.</p>
-  </div>
-</aside>
+
+
+<footer class="foot">Обкладник · ідея та методика: <a href="https://ai.senchikhina.com/" target="_blank" rel="noopener">Дарʼя Сенчихіна</a></footer>
 
 <div class="toast" id="toast"></div>
 
@@ -351,19 +366,12 @@ const FONTS = [
   {g:'Акцидентні', list:[['Russo One','400'],['Comfortaa','700']]},
 ];
 const PAIRS = [['#17191F','#FFFFFF'],['#FFFFFF','#17191F'],['#0E1F5B','#FFD23F'],['#1B4DD8','#FFFFFF'],['#B3261E','#FFFFFF'],['#0B6B3A','#F2E8CF'],['#5B2A86','#F6C445'],['#F2542D','#17191F']];
-const GENRES = [
-  {id:'news', name:'Новина', t:'urgent, factual, here-and-now', tu:'терміново, фактично, тут і зараз', en:'documentary press photograph, decisive moment, natural light, real location, slight motion', ru:'документальна репортажна фотографія, вирішальний момент, природне світло, реальна локація'},
-  {id:'interview', name:'Інтервʼю', t:'personal, human-centred, one character', tu:'особисто, про людину, один герой', en:'editorial portrait, one person, shallow depth of field, studio or window light, calm expression, plenty of negative space', ru:'редакційний портрет, одна людина, мала глибина різкості, спокійний вираз, багато повітря в кадрі'},
-  {id:'invest', name:'Розслідування', t:'serious, dark, something hidden being revealed', tu:'серйозно, темно, приховане виходить назовні', en:'moody investigative still life, documents, hard side light, deep shadows, cold palette, cinematic', ru:'похмурий натюрморт для розслідування, документи, жорстке бокове світло, глибокі тіні, холодна палітра'},
-  {id:'explain', name:'Експлейнер', t:'clear, didactic, one idea explained simply', tu:'зрозуміло, дидактично, одна ідея просто', en:'clean conceptual photograph, one clear metaphor, simple objects, lots of empty background', ru:'чиста концептуальна фотографія, одна зрозуміла метафора, прості предмети, багато порожнього фону'},
-  {id:'column', name:'Колонка', t:'reflective, symbolic, quiet', tu:'рефлексивно, символічно, тихо', en:'minimalist symbolic photograph, single object on plain background, soft light, quiet mood', ru:'мінімалістична символічна фотографія, один предмет на простому фоні, мʼяке світло'},
-];
-const KINDS = [{id:'photo', name:'Фото'},{id:'collage', name:'Колаж'},{id:'illu', name:'Ілюстрація'}];
+const KINDS = [{id:'illu', name:'Ілюстрація'},{id:'collage', name:'Колаж'}];
 const COLLAGE = [
   {id:'cutout', name:'Вирізки', en:'paper cut-out collage: elements cut along their contours with a thin white paper edge, layered with subtle drop shadows, slightly tilted', ru:'колаж із паперових вирізок: елементи вирізані по контуру з тонким білим краєм, накладені шарами з легкими тінями, трохи нахилені'},
   {id:'torn', name:'Рваний папір', en:'torn paper collage: rough torn edges, overlapping layers, visible paper texture, tactile and editorial', ru:'колаж із рваного паперу: нерівні розірвані краї, шари, що перекриваються, видима текстура паперу'},
   {id:'duotone', name:'Дуотон', en:'graphic duotone collage: every element toned in the same two colors, halftone texture, bold flat background shapes', ru:'графічний дуотон-колаж: усі елементи тоновані в одні й ті самі два кольори, растрова текстура, великі пласкі форми фону'},
-  {id:'clean', name:'Чистий', en:'clean photographic montage: elements blended seamlessly with matched lighting and perspective, so it reads as one photograph', ru:'чистий фотомонтаж: елементи зведені безшовно, зі збігом світла й перспективи, щоб читалося як одне фото'},
+  {id:'clean', name:'Безшовний', en:'seamless photomontage: elements blended smoothly with matched lighting and perspective, no paper edges — but still a composed montage, not a document', ru:'безшовний фотомонтаж: елементи зведені плавно, зі збігом світла й перспективи, без паперових країв — але це скомпонований монтаж, не документ'},
 ];
 const STYLES = [
   {id:'flat', name:'Пласка векторна', en:'flat vector illustration, bold simple shapes, limited palette, no gradients, clean edges', ru:'пласка векторна ілюстрація, великі прості форми, обмежена палітра, без градієнтів, чисті краї'},
@@ -376,14 +384,14 @@ const STYLES = [
 const LAYOUTS = [{id:'bottom',name:'Знизу'},{id:'top',name:'Зверху'},{id:'center',name:'По центру'},{id:'panel',name:'Панель бренду'}];
 const OVERLAYS = [{id:'none',name:'Немає'},{id:'darken',name:'Затемнення'},{id:'plate',name:'Плашка'}];
 const PRESETS = [
-  {name:'Новина', kicker:'Економіка', headline:'*Світло* подорожчає: що зміниться у платіжках', author:'', layout:'bottom', overlay:'darken', dark:70, kind:'photo', genre:'news', topic:'Тарифи на електроенергію зростуть із жовтня', sample:'city', fx:60, fy:40},
-  {name:'Інтервʼю', kicker:'Інтервʼю', headline:'«До зими не готові, але *будемо*»', author:'Розмовляла Дарʼя Сенчихіна', layout:'panel', overlay:'none', dark:70, kind:'photo', genre:'interview', topic:'Розмова з головою ОСББ про підготовку будинку до зими', sample:'portrait', fx:50, fy:30},
-  {name:'Експлейнер', kicker:'Пояснюємо', headline:'Як читати нову *платіжку*\nза дві хвилини', author:'', layout:'top', overlay:'plate', dark:70, kind:'illu', genre:'explain', topic:'Як влаштована нова платіжка за комунальні послуги', sample:'flat', fx:50, fy:50},
+  {name:'Новина', kicker:'Економіка', headline:'*Світло* подорожчає: що зміниться у платіжках', author:'', layout:'bottom', overlay:'darken', dark:70, kind:'illu', aiBadge:false, topic:'Тарифи на електроенергію зростуть із жовтня', sample:'city', fx:60, fy:40},
+  {name:'Інтервʼю', kicker:'Інтервʼю', headline:'«До зими не готові, але *будемо*»', author:'Розмовляла Дарʼя Сенчихіна', layout:'panel', overlay:'none', dark:70, kind:'illu', aiBadge:false, topic:'Розмова з головою ОСББ про підготовку будинку до зими', sample:'portrait', fx:50, fy:30},
+  {name:'Експлейнер', kicker:'Пояснюємо', headline:'Як читати нову *платіжку*\nза дві хвилини', author:'', layout:'top', overlay:'plate', dark:70, kind:'illu', aiBadge:true, topic:'Як влаштована нова платіжка за комунальні послуги', sample:'flat', fx:50, fy:50},
 ];
 
 const state = {
-  fmt:'yt', genre:'news', lang:'en', layout:'bottom', overlay:'darken', dark:70,
-  kind:'photo', collageStyle:'cutout', illuStyle:'flat', heroEl:'', sideEls:'', collagePhotos:[], styleRefs:[],
+  fmt:'yt', lang:'en', aiBadge:false, aiBadgeText:'Створено за допомогою ШІ', layout:'bottom', overlay:'darken', dark:70,
+  kind:'illu', collageStyle:'cutout', illuStyle:'flat', heroEl:'', sideEls:'', collagePhotos:[], styleRefs:[],
   topic:'Тарифи на електроенергію зростуть із жовтня', kicker:'Економіка', headline:'*Світло* подорожчає: що зміниться у платіжках', author:'',
   fx:60, fy:40, safe:false, safeDismissed:false, sample:'city',
   brand:{name:'Міські новини', logo:null, primary:'#0E1F5B', accent:'#FFD23F', font:'Unbounded', customFont:null, logoSize:'m'},
@@ -436,12 +444,13 @@ function buildLogoColors(cols){ if(cols) logoCols=cols; cols=logoCols; const f=$
   [['#logoColorsP','primary'],['#logoColorsA','accent']].forEach(([sel,key])=>{ const box=$(sel); box.innerHTML=''; cols.forEach(hex=>{ const b=document.createElement('button'); b.type='button'; b.className='sw'; b.style.background=hex; b.title=hex; b.setAttribute('aria-pressed', state.brand[key].toUpperCase()===hex); b.onclick=()=>{ state.brand[key]=hex; syncColorInputs(); saveKit(); buildLogoColors(); buildPairs(); render(); }; box.appendChild(b); }); }); }
 const LOGO_SIZES=[{id:'s',name:'Малий'},{id:'m',name:'Середній'},{id:'l',name:'Великий'}];
 function buildLogoSize(){ const box=$('#logoSizeChips'); box.innerHTML=''; LOGO_SIZES.forEach(o=>{ const c=document.createElement('button'); c.type='button'; c.className='chip'; c.textContent=o.name; c.setAttribute('aria-pressed',(state.brand.logoSize||'m')===o.id); c.onclick=()=>{ state.brand.logoSize=o.id; saveKit(); buildLogoSize(); render(); }; box.appendChild(c); }); }
-function openDrawer(o){ $('#drawer').hidden=!o; $('#drawerBg').hidden=!o; if(o) $('#brandName').focus(); }
+const LOGO_POS=[{id:'tl',name:'↖'},{id:'tr',name:'↗'},{id:'bl',name:'↙'},{id:'br',name:'↘'}];
+function buildLogoPos(){ const box=$('#logoPosChips'); box.innerHTML=''; LOGO_POS.forEach(o=>{ const c=document.createElement('button'); c.type='button'; c.className='chip'; c.textContent=o.name; c.title={tl:'Зверху зліва',tr:'Зверху справа',bl:'Знизу зліва',br:'Знизу справа'}[o.id]; c.setAttribute('aria-pressed',(state.brand.logoPos||'tl')===o.id); c.onclick=()=>{ state.brand.logoPos=o.id; saveKit(); buildLogoPos(); render(); }; box.appendChild(c); }); $('#logoScale').value=state.brand.logoScale||100; $('#logoScaleV').textContent=(state.brand.logoScale||100)+'%'; }
 function syncColorInputs(){ const B=state.brand; $('#colPrimary').value=B.primary; $('#colPrimaryT').value=B.primary; $('#colAccent').value=B.accent; $('#colAccentT').value=B.accent; }
 function buildPresets(){ const box=$('#presetBtns'); box.innerHTML=''; PRESETS.forEach(p=>{ const b=document.createElement('button'); b.type='button'; b.className='chip'; b.textContent=p.name; b.onclick=()=>applyPreset(p); box.appendChild(b); }); }
-function applyPreset(p){ Object.assign(state,{kicker:p.kicker,headline:p.headline,author:p.author,layout:p.layout,overlay:p.overlay,dark:p.dark,kind:p.kind,genre:p.genre,topic:p.topic,sample:p.sample,fx:p.fx,fy:p.fy});
+function applyPreset(p){ Object.assign(state,{kicker:p.kicker,headline:p.headline,author:p.author,layout:p.layout,overlay:p.overlay,dark:p.dark,kind:p.kind,aiBadge:!!p.aiBadge,topic:p.topic,sample:p.sample,fx:p.fx,fy:p.fy}); $('#aiBadge').checked=state.aiBadge; $('#aiBadgeRow').hidden=!state.aiBadge;
   $('#kicker').value=p.kicker; $('#headline').value=p.headline; $('#author').value=p.author; $('#topic').value=p.topic; $('#dark').value=p.dark;
-  buildLayouts(); buildOverlays(); buildKinds(); buildChips('#genreChips',GENRES,'genre'); updatePrompt(); render(); window.scrollTo({top:0,behavior:'smooth'}); }
+  buildLayouts(); buildOverlays(); buildKinds(); updatePrompt(); render(); window.scrollTo({top:0,behavior:'smooth'}); }
 
 /* ---------- logo colors ---------- */
 function extractColors(im){
@@ -456,7 +465,7 @@ function colorDist(a,b){ const p=h=>[1,3,5].map(i=>parseInt(h.substr(i,2),16)); 
 
 /* ---------- prompt ---------- */
 function buildPrompt(){
-  const f=FORMATS.find(x=>x.id===state.fmt), g=GENRES.find(x=>x.id===state.genre);
+  const f=FORMATS.find(x=>x.id===state.fmt);
   const tall=f.h>f.w;
   const zone= state.layout==='panel' ? (tall?'bottom half':'left half') : state.layout==='top' ? (tall?'upper third':'upper-left third') : state.layout==='center' ? 'centre' : (tall?'lower third':'lower-left third');
   const zoneUa={'bottom half':'нижня половина','left half':'ліва половина','upper third':'верхня третина','upper-left third':'верхня ліва третина','centre':'центральна частина','lower third':'нижня третина','lower-left third':'нижня ліва третина'}[zone];
@@ -467,20 +476,16 @@ function buildPrompt(){
   const tailUa=`Композиція: ${zoneUa} кадру спокійна й порожня — туди ляже заголовок. Головний обʼєкт — ${subjUa}.\nСуворо без тексту, літер, цифр, логотипів і водяних знаків.\nСпіввідношення сторін ${f.ratio} (${f.w}×${f.h}).`;
   if(state.kind==='collage'){
     const cs=COLLAGE.find(x=>x.id===state.collageStyle); const hero=state.heroEl.trim(); const sides=state.sideEls.split('\n').map(s=>s.trim()).filter(Boolean).slice(0,3); const n=state.collagePhotos.length;
-    if(en){ const src= n ? `Use the attached numbered sheet as source material: photo 1 is the main element, photos ${n>1?`2–${n}`:'2+'} are supporting. Keep people and objects recognizable, do not invent new faces.` : `Elements: main — ${hero||'(main element)'}; supporting — ${sides.length?sides.join('; '):'(2–3 supporting elements)'}.`;
-      return `Create ONE editorial collage for a news cover. Topic: "${topic}".\n${src}\nHierarchy: the main element is large, sharp and in focus, taking about 60% of the frame. Supporting elements are smaller and arranged organically around it — overlapping, varied scale, never a grid and never evenly spaced.\nManner: ${cs.en}. Unify everything with one color grading and one light direction so it reads as a single image. Genre feel: ${g.t}.\n${tailEn}`; }
-    const src= n ? `Використай прикріплений пронумерований аркуш як матеріал: фото 1 — головний елемент, фото ${n>1?`2–${n}`:'2+'} — додаткові. Людей і предмети залиш упізнаваними, не вигадуй нових облич.` : `Елементи: головний — ${hero||'(головний елемент)'}; додаткові — ${sides.length?sides.join('; '):'(2–3 додаткові елементи)'}.`;
-    return `Зроби ОДИН редакційний колаж для обкладинки. Тема: «${topic}».\n${src}\nІєрархія: головний елемент великий, різкий, у фокусі, займає близько 60% кадру. Додаткові — менші, скомпоновані органічно навколо нього: перекриваються, різного масштабу, не сіткою й не рівномірно.\nМанера: ${cs.ru}. Обʼєднай усе одним тонуванням і одним напрямком світла, щоб читалося як одна картинка. Жанр: ${g.tu}.\n${tailUa}`;
+    if(en){ const src= n ? `Use the attached numbered sheet as source material: photo 1 is the main element, photos ${n>1?`2–${n}`:'2+'} are supporting. Keep people and objects recognizable, do not invent new faces, do not add people or objects that are not in the photos.` : `Elements: main — ${hero||'(main element)'}; supporting — ${sides.length?sides.join('; '):'(2–3 supporting elements)'}.`;
+      return `Create ONE editorial collage for a news cover. Topic: "${topic}".\n${src}\nHierarchy: the main element is large, sharp and in focus, taking about 60% of the frame. Supporting elements are smaller and arranged organically around it — overlapping, varied scale, never a grid and never evenly spaced.\nManner: ${cs.en}. Unify the elements with one color grading, but the result must clearly read as a collage — never as a single real photograph.\n${tailEn}`; }
+    const src= n ? `Використай прикріплений пронумерований аркуш як матеріал: фото 1 — головний елемент, фото ${n>1?`2–${n}`:'2+'} — додаткові. Людей і предмети залиш упізнаваними, не вигадуй нових облич і не додавай того, чого немає на фото.` : `Елементи: головний — ${hero||'(головний елемент)'}; додаткові — ${sides.length?sides.join('; '):'(2–3 додаткові елементи)'}.`;
+    return `Зроби ОДИН редакційний колаж для обкладинки. Тема: «${topic}».\n${src}\nІєрархія: головний елемент великий, різкий, у фокусі, займає близько 60% кадру. Додаткові — менші, скомпоновані органічно навколо нього: перекриваються, різного масштабу, не сіткою й не рівномірно.\nМанера: ${cs.ru}. Обʼєднай елементи одним тонуванням, але результат має чітко читатися як колаж — не як одна справжня фотографія.\n${tailUa}`;
   }
-  if(state.kind==='illu'){
-    const st=STYLES.find(x=>x.id===state.illuStyle); const n=state.styleRefs.length;
-    if(en){ const ref= n ? `Match the visual style, palette and mood of the attached reference sheet (${n} image${n>1?'s':''}). Use the references for style and color only — do not copy their subjects or composition.` : '';
-      return `Create an illustration for a news cover. Topic: "${topic}" — express it through one clear visual metaphor.\nStyle: ${st.en}. ${ref}\nGenre feel: ${g.t}.\n${tailEn}`; }
-    const ref= n ? `Повтори візуальний стиль, палітру й настрій прикріпленого аркуша референсів (${n} зобр.). Референси — лише для стилю та кольору, не копіюй їхні сюжети чи композицію.` : '';
-    return `Зроби ілюстрацію для обкладинки матеріалу. Тема: «${topic}» — передай її через одну зрозумілу візуальну метафору.\nСтиль: ${st.ru}. ${ref}\nЖанр: ${g.tu}.\n${tailUa}`;
-  }
-  if(en) return `Create an image for a news cover. Topic: "${topic}".\nStyle: ${g.en}.\n${tailEn}`;
-  return `Зроби картинку для обкладинки матеріалу. Тема: «${topic}».\nСтиль: ${g.ru}.\n${tailUa}`;
+  const st=STYLES.find(x=>x.id===state.illuStyle); const n=state.styleRefs.length;
+  if(en){ const ref= n ? ` Match the visual style, palette and mood of the attached reference sheet (${n} image${n>1?'s':''}). Use the references for style and color only — do not copy their subjects or composition.` : '';
+    return `Create an illustration for a news cover. Topic: "${topic}" — express it through one clear visual metaphor.\nStyle: ${st.en}.${ref}\nNot photorealistic: it must be clearly an illustration, never something that could be mistaken for a real photograph. No real people's likenesses.\n${tailEn}`; }
+  const ref= n ? ` Повтори візуальний стиль, палітру й настрій прикріпленого аркуша референсів (${n} зобр.). Референси — лише для стилю та кольору, не копіюй їхні сюжети чи композицію.` : '';
+  return `Зроби ілюстрацію для обкладинки матеріалу. Тема: «${topic}» — передай її через одну зрозумілу візуальну метафору.\nСтиль: ${st.ru}.${ref}\nНе фотореалістично: це має бути очевидна ілюстрація, яку неможливо сплутати зі справжнім фото. Без облич реальних людей.\n${tailUa}`;
 }
 function updatePrompt(){ $('#promptBox').textContent=buildPrompt(); }
 
@@ -512,6 +517,7 @@ const c=$('#c'), ctx=c.getContext('2d');
 function render(){
   const f=FORMATS.find(x=>x.id===state.fmt); const W=f.w,H=f.h; c.width=W; c.height=H;
   const B=state.brand; const tall=H>W; const u=Math.min(W,H)/100; const pad=u*6;
+  const sTop= state.fmt==='story'? H*.13 : 0, sBot= state.fmt==='story'? H*.16 : (state.fmt==='og'? 0 : 0);
   $('#stageDims').textContent=`${f.name} · ${W} × ${H}`; $('#stageHint').innerHTML= img? 'Картинку можна тягнути мишкою, щоб посунути.' : '<span class="sample">приклад</span> — вставте свою картинку у кроці 2. Картинку можна тягнути мишкою.';
 
   let ix=0,iy=0,iw=W,ih=H,panel=null; const L=state.layout; const OV= L==='panel'?'none':state.overlay;
@@ -528,17 +534,17 @@ function render(){
   if(OV==='plate'){ textColor=contrastOn(B.primary); }
   const paras=parseHeadline(state.headline.trim()||' ');
   const start= tall? u*9 : u*11, min=u*4;
-  const logoH=u*({s:5,m:7,l:10}[state.brand.logoSize||'m']), kickH=(state.kicker.trim()? u*2.8*1.9+u*2.2:0), authH=(state.author.trim()? u*2.2+u*3.2:0);
-  const maxH= L==='panel' ? panel.h-pad*2-logoH-u*3-kickH-authH : L==='top' ? H*.55 : H*.6;
+  const lBase=u*({s:5,m:7,l:10}[state.brand.logoSize||'m'])*((state.brand.logoScale||100)/100); const lAsp= logoImg? logoImg.width/logoImg.height : 3; const logoH= lAsp>1.6? lBase : lAsp>0.7? lBase*1.5 : lBase*2.1; const kickH=(state.kicker.trim()? u*2.8*1.9+u*2.2:0), authH=(state.author.trim()? u*2.2+u*3.2:0);
+  const maxH= L==='panel' ? panel.h-pad*2-logoH-u*3-kickH-authH-(state.fmt==='story'?H*.16:0) : L==='top' ? H*.55 : H*.6;
   const fit=fitHeadline(ctx,paras,cf.family,cf.weight,textW,maxLines,start,min,maxH);
   const lh=fit.size*1.12, blockH=fit.lines.length*lh; const authorSize=u*3.2, kickSize=u*2.8, gap=u*2.2;
   const hasAuthor=!!state.author.trim(), hasKick=!!state.kicker.trim();
   const total= (hasKick? kickSize*1.9+gap:0) + blockH + (hasAuthor? gap+authorSize:0);
   let top;
-  if(L==='top'){ top= pad + (logoImg||B.name.trim()? logoH+gap*1.5 : 0); if(state.fmt==='story') top+=u*14; }
+  if(L==='top'){ const logoTop=(state.brand.logoPos||'tl').startsWith('t'); top= pad + (logoTop&&(logoImg||B.name.trim())? logoH+gap*1.5 : 0); top+=sTop; }
   else if(L==='center'){ top=(H-total)/2; }
-  else if(L==='panel'){ top=Math.max(panel.y+pad+logoH+u*3, panel.y+panel.h-pad-total); }
-  else { top=H-pad-total-(state.fmt==='story'?u*14:0); }
+  else if(L==='panel'){ top=Math.max(panel.y+pad+logoH+u*3, panel.y+panel.h-pad-sBot-total); }
+  else { const logoBottom=(state.brand.logoPos||'tl').startsWith('b') && (logoImg||B.name.trim()); top=H-pad-total-sBot-(logoBottom? logoH+gap*1.5:0); }
   const kickTop=top, hlTop= top + (hasKick? kickSize*1.9+gap:0), authorY= hlTop+blockH+gap+authorSize*.85;
 
   // overlay
@@ -571,12 +577,27 @@ function render(){
   if(hasAuthor){ ctx.font=`600 ${authorSize}px "Manrope"`; ctx.fillStyle= OV==='plate'? '#FFFFFF' : textColor; if(OV==='plate' && L!=='panel'){ ctx.shadowColor='rgba(0,0,0,.5)'; ctx.shadowBlur=authorSize*.4; } ctx.globalAlpha=.9; const t=state.author.trim(); const ax= align==='center'? (W-ctx.measureText(t).width)/2 : textX; ctx.fillText(t,ax,authorY); ctx.globalAlpha=1; ctx.shadowColor='transparent'; ctx.shadowBlur=0; }
 
   // logo / name
-  const logoAtBottom= L==='top'; let lx=pad, ly= logoAtBottom? H-pad-logoH-(state.fmt==='story'?u*14:0) : pad+(state.fmt==='story'&&!logoAtBottom?u*14:0);
+  const pos=state.brand.logoPos||'tl';
+  const lw= logoImg? logoH*(logoImg.width/logoImg.height) : 0;
+  let lx, ly;
   if(L==='panel'){ lx=panel.x+pad; ly=panel.y+pad; }
-  if(logoImg){ ctx.drawImage(logoImg,lx,ly,logoH*(logoImg.width/logoImg.height),logoH); }
+  else { const nameW= logoImg? lw : (B.name.trim()? (ctx.font=`700 ${u*3.4}px "Manrope"`, ctx.letterSpacing=`${u*.25}px`, ctx.measureText(B.name.trim().toUpperCase()).width+u*3) : 0); const nameH= logoImg? logoH : u*3.4+u*2.4;
+    lx= pos.endsWith('r') ? W-pad-nameW : pad; ly= pos.startsWith('b') ? H-pad-nameH-sBot : pad+sTop; ctx.letterSpacing='0px'; }
+  if(logoImg){ ctx.drawImage(logoImg,lx,ly,lw,logoH); }
   else if(B.name.trim()){ ctx.font=`700 ${u*3.4}px "Manrope"`; ctx.textBaseline='top'; ctx.letterSpacing=`${u*.25}px`; const nm=B.name.trim().toUpperCase(); const nw=ctx.measureText(nm).width+u*3;
     if(L==='panel'){ ctx.fillStyle=contrastOn(B.primary); ctx.fillText(nm,lx,ly+u); } else { ctx.fillStyle='rgba(0,0,0,.35)'; roundRect(ctx,lx,ly,nw,u*3.4+u*2.4,u*.8); ctx.fill(); ctx.fillStyle='#FFFFFF'; ctx.fillText(nm,lx+u*1.5,ly+u*1.2); }
     ctx.letterSpacing='0px'; ctx.textBaseline='alphabetic'; }
+
+  // AI badge — first corner that overlaps neither text, nor logo, nor social zones
+  if(state.aiBadge){ const t=(state.aiBadgeText.trim()||'Створено за допомогою ШІ'); ctx.font=`600 ${u*2.4}px "Manrope"`; const bw=ctx.measureText(t).width+u*2.4, bh=u*2.4*1.8;
+    const hit=(a,b)=> a.x<b.x+b.w && a.x+a.w>b.x && a.y<b.y+b.h && a.y+a.h>b.y;
+    const textBox={x:textX-u, y:kickTop-u, w:(align==='center'? W-textX*2 : textW)+u*2, h:total+u*2};
+    const logoBox={x:lx-u, y:ly-u, w:(logoImg? lw : W*.3)+u*2, h:logoH+u*2};
+    const zoneBoxes=[]; if(state.fmt==='yt') zoneBoxes.push({x:W*.78,y:H*.84,w:W*.22,h:H*.16}); if(state.fmt==='og') zoneBoxes.push({x:W*.78,y:H*.8,w:W*.22,h:H*.2});
+    const cands=['br','bl','tr','tl'].map(c=>({c, x: c.endsWith('r')? W-pad-bw : pad, y: c.startsWith('b')? H-pad-bh-sBot : pad+sTop, w:bw, h:bh}));
+    let pick=cands.find(r=> !hit(r,textBox) && !hit(r,logoBox) && !zoneBoxes.some(z=>hit(r,z)) && !(panel && hit(r,panel)));
+    if(!pick) pick=cands.find(r=> !hit(r,textBox) && !hit(r,logoBox)) || cands[2];
+    ctx.fillStyle='rgba(10,12,18,.55)'; roundRect(ctx,pick.x,pick.y,pick.w,pick.h,pick.h/2); ctx.fill(); ctx.fillStyle='rgba(255,255,255,.92)'; ctx.textBaseline='middle'; ctx.textAlign='left'; ctx.fillText(t,pick.x+u*1.2,pick.y+pick.h/2); ctx.textBaseline='alphabetic'; }
 
   // safe zones
   const zones=[]; let safeHit=false;
@@ -596,14 +617,14 @@ function render(){
   setRule('logo', (logoImg||B.name.trim())?'ok':'bad', logoImg?'Логотип на місці.': B.name.trim()?'Стоїть назва видання. Завантажте логотип у «Стилі редакції», щоб було впізнаваніше.':'Вкажіть назву видання або логотип у «Стилі редакції».');
   setRule('safe', zones.length? (safeHit?'bad':'ok') : 'ok', zones.length? (safeHit?'Червона зона на макеті — це місце, яке соцмережа накриє своїми кнопками чи таймкодом. Посуньте текст: змініть розкладку або скоротіть заголовок.':'Текст не потрапляє під кнопки й таймкод соцмережі.') : 'У цього формату соцмережа нічого не перекриває.');
 
-  $('#styleName').textContent=B.name.trim()?'· '+B.name.trim():''; $('#imgSt').textContent= img?'своя картинка':'приклад'; $('#txtSt').textContent=`${words} ${words===1?'слово':words<5?'слова':'слів'}`; $('#laySt').textContent=LAYOUTS.find(l=>l.id===L).name+(L!=='panel'?' · '+OVERLAYS.find(o=>o.id===state.overlay).name.toLowerCase():'');
+  $('#styleName').textContent=B.name.trim()||'не заданий'; $('#imgRow').hidden=!img; $('#imgSt').textContent= img?'своя картинка':'приклад'; $('#txtSt').textContent=`${words} ${words===1?'слово':words<5?'слова':'слів'}`; $('#laySt').textContent=LAYOUTS.find(l=>l.id===L).name+(L!=='panel'?' · '+OVERLAYS.find(o=>o.id===state.overlay).name.toLowerCase():'');
 }
 
 /* ---------- files ---------- */
 function loadImage(src){ return new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=src; }); }
 function readFile(file){ return new Promise(r=>{ const fr=new FileReader(); fr.onload=()=>r(fr.result); fr.readAsDataURL(file); }); }
 async function setImageFile(file){ if(!file||!file.type.startsWith('image/')) return; const src=await readFile(file); img=await loadImage(src); state.imgSrc=src; state.fx=50; state.fy=50; toast('Картинку вставлено — посуньте її мишкою, якщо треба'); render(); }
-async function setLogoFile(file){ if(!file) return; const src=await readFile(file); logoImg=await loadImage(src); state.brand.logo=src; $('#logoPrev').src=src; $('#logoPrev').hidden=false; $('#logoNone').hidden=true; buildLogoColors(extractColors(logoImg)); saveKit(); render(); }
+async function setLogoFile(file){ if(!file) return; const src=await readFile(file); logoImg=await loadImage(src); state.brand.logo=src; $('#logoPrev').src=src; $('#logoPrev').hidden=false; $('#logoNone').hidden=true; $('#logoRemove').hidden=false; buildLogoColors(extractColors(logoImg)); saveKit(); render(); }
 async function setFontFile(file){ if(!file) return; const data=await readFile(file); state.brand.customFont={name:file.name.replace(/\.[^.]+$/,''), data}; state.brand.font='__custom'; await loadCustomFont(); buildFontSelect(); saveKit(); await ensureFonts(); render(); toast('Шрифт додано'); }
 
 /* ---------- references & sheets ---------- */
@@ -643,12 +664,12 @@ function bindDrag(){ let d=null; c.addEventListener('pointerdown',e=>{ d={x:e.cl
   const up=()=>{ d=null; c.classList.remove('drag'); }; c.addEventListener('pointerup',up); c.addEventListener('pointercancel',up); }
 
 /* ---------- init ---------- */
-function bindBrand(){ const B=state.brand; $('#brandName').value=B.name; syncColorInputs(); buildFontSelect(); buildPairs(); buildLogoSize();
-  if(B.logo){ loadImage(B.logo).then(i=>{ logoImg=i; $('#logoPrev').src=B.logo; $('#logoPrev').hidden=false; $('#logoNone').hidden=true; buildLogoColors(extractColors(i)); render(); }).catch(()=>{}); } }
+function bindBrand(){ const B=state.brand; $('#brandName').value=B.name; syncColorInputs(); buildFontSelect(); buildPairs(); buildLogoSize(); buildLogoPos();
+  if(B.logo){ loadImage(B.logo).then(i=>{ logoImg=i; $('#logoPrev').src=B.logo; $('#logoPrev').hidden=false; $('#logoNone').hidden=true; $('#logoRemove').hidden=false; buildLogoColors(extractColors(i)); render(); }).catch(()=>{}); } }
 async function init(){
-  loadKit(); buildFormats(); buildKinds(); buildChips('#genreChips',GENRES,'genre'); buildLogoSize(); buildChips('#collageChips',COLLAGE,'collageStyle'); buildChips('#styleChips',STYLES,'illuStyle'); buildLayouts(); buildOverlays(); buildRules(); buildPresets(); bindBrand();
+  loadKit(); buildFormats(); buildKinds(); buildLogoSize(); buildChips('#collageChips',COLLAGE,'collageStyle'); buildChips('#styleChips',STYLES,'illuStyle'); buildLayouts(); buildOverlays(); buildRules(); buildPresets(); bindBrand();
   buildRefs('#collageRefs','collagePhotos',4,true); buildRefs('#styleRefs','styleRefs',3,false);
-  $('#topic').value=state.topic; $('#kicker').value=state.kicker; $('#headline').value=state.headline; $('#author').value=state.author; $('#heroEl').value=state.heroEl; $('#sideEls').value=state.sideEls; $('#dark').value=state.dark;
+  $('#topic').value=state.topic; $('#kicker').value=state.kicker; $('#headline').value=state.headline; $('#author').value=state.author; $('#heroEl').value=state.heroEl; $('#sideEls').value=state.sideEls; $('#dark').value=state.dark; $('#aiBadge').checked=state.aiBadge; $('#aiBadgeRow').hidden=!state.aiBadge; $('#aiBadgeText').value=state.aiBadgeText;
   $('#gen').addEventListener('toggle',()=>{ if($('#gen').open) updatePrompt(); });
   updatePrompt();
   $('#topic').oninput=e=>{state.topic=e.target.value; updatePrompt();};
@@ -659,17 +680,21 @@ async function init(){
   $('#author').oninput=e=>{state.author=e.target.value; render();};
   $('#dark').oninput=e=>{state.dark=+e.target.value; render();};
   $('#safeToggle').onchange=e=>{state.safe=e.target.checked; if(!state.safe) state.safeDismissed=true; render();};
-  $('#openStyle').onclick=()=>openDrawer(true); $('#closeStyle').onclick=()=>openDrawer(false); $('#drawerBg').onclick=()=>openDrawer(false); document.addEventListener('keydown',e=>{ if(e.key==='Escape') openDrawer(false); });
+  $('#logoScale').oninput=e=>{ state.brand.logoScale=+e.target.value; $('#logoScaleV').textContent=e.target.value+'%'; saveKit(); render(); };
+  $('#imgRemove').onclick=()=>{ img=null; state.imgSrc=null; state.fx=50; state.fy=40; $('#imgFile').value=''; state.aiBadge=false; $('#aiBadge').checked=false; $('#aiBadgeRow').hidden=true; render(); toast('Картинку прибрано — знову показуємо приклад'); };
   $('#brandName').oninput=e=>{state.brand.name=e.target.value; saveKit(); render();};
   const syncCol=(picker,text,key)=>{ $(picker).oninput=e=>{state.brand[key]=e.target.value.toUpperCase(); $(text).value=state.brand[key]; saveKit(); buildPairs(); buildLogoColors(); render();}; $(text).oninput=e=>{ if(/^#[0-9a-f]{6}$/i.test(e.target.value)){ state.brand[key]=e.target.value.toUpperCase(); $(picker).value=e.target.value; saveKit(); buildPairs(); buildLogoColors(); render(); } }; };
   syncCol('#colPrimary','#colPrimaryT','primary'); syncCol('#colAccent','#colAccentT','accent');
   $('#fontSel').onchange=async e=>{ state.brand.font=e.target.value; saveKit(); await ensureFonts(); render(); };
   $('#fontPick').onclick=()=>$('#fontFile').click(); $('#fontFile').onchange=e=>setFontFile(e.target.files[0]);
   $('#logoPick').onclick=()=>$('#logoFile').click(); $('#logoFile').onchange=e=>setLogoFile(e.target.files[0]);
+  $('#logoRemove').onclick=()=>{ logoImg=null; state.brand.logo=null; $('#logoPrev').hidden=true; $('#logoPrev').removeAttribute('src'); $('#logoNone').hidden=false; $('#logoRemove').hidden=true; $('#logoFile').value=''; buildLogoColors([]); saveKit(); render(); toast('Логотип прибрано — стоятиме назва видання'); };
   $('#imgFile').onchange=e=>setImageFile(e.target.files[0]);
   $('#langEn').onclick=()=>{state.lang='en'; $('#langEn').setAttribute('aria-pressed',true); $('#langRu').setAttribute('aria-pressed',false); updatePrompt();};
   $('#langRu').onclick=()=>{state.lang='ru'; $('#langEn').setAttribute('aria-pressed',false); $('#langRu').setAttribute('aria-pressed',true); updatePrompt();};
-  $('#copyPrompt').onclick=async()=>{ await copyText(buildPrompt()); toast('Промпт скопійовано — вставте у ChatGPT'); };
+  $('#copyPrompt').onclick=async()=>{ await copyText(buildPrompt()); if(!state.aiBadge){ state.aiBadge=true; $('#aiBadge').checked=true; $('#aiBadgeRow').hidden=false; render(); } toast('Промпт скопійовано — вставте у ChatGPT'); };
+  $('#aiBadge').onchange=e=>{ state.aiBadge=e.target.checked; $('#aiBadgeRow').hidden=!state.aiBadge; render(); };
+  $('#aiBadgeText').oninput=e=>{ state.aiBadgeText=e.target.value; render(); };
   $('#copyCollageSheet').onclick=()=>copySheet('collagePhotos',true,'Аркуш фото');
   $('#copyStyleSheet').onclick=()=>copySheet('styleRefs',false,'Аркуш референсів');
   $('#exportBtn').onclick=exportPng; $('#copyImg').onclick=()=>{ state.safe=false; $('#safeToggle').checked=false; render(); copyCanvas(); };
